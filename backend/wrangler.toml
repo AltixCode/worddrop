@@ -1,0 +1,20 @@
+name = "worddrop-puzzle"
+main = "src/index.ts"
+compatibility_date = "2026-01-15"
+
+# One scheduled run a day at 00:00 UTC publishes the day's puzzle. Publication
+# is idempotent: the selection is a pure function of the day index, so a missed
+# or repeated run always writes the same answer.
+[triggers]
+crons = ["0 0 * * *"]
+
+[[kv_namespaces]]
+binding = "PUZZLES"
+# Created with: wrangler kv namespace create PUZZLES
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_KV_PREVIEW_ID"
+
+[vars]
+# Days either side of today that may be fetched. The archive reads backwards
+# only; nothing may read forward, or tomorrow's answer is one request away.
+MAX_PAST_DAYS = "3650"

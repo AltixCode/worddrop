@@ -1,0 +1,111 @@
+{
+  "expo": {
+    "name": "WordDrop",
+    "slug": "worddrop",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "worddrop",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0B0F16"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.altixcode.worddrop",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": "WordDrop asks only so that the ads that keep the game free can be more relevant. Declining changes nothing about the puzzle, and the lifetime unlock removes ads entirely.",
+        "CFBundleLocalizations": [
+          "en",
+          "es",
+          "fr",
+          "de",
+          "ru",
+          "zh",
+          "ja",
+          "pt",
+          "ko",
+          "it",
+          "tr",
+          "ar",
+          "fa",
+          "el"
+        ],
+        "CFBundleDevelopmentRegion": "en"
+      }
+    },
+    "android": {
+      "package": "com.altixcode.worddrop",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0B0F16",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["com.google.android.gms.permission.AD_ID"]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-tracking-transparency",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android-icon-monochrome.png",
+          "color": "#0B0F16"
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511",
+          "userTrackingUsageDescription": "WordDrop asks only so that the ads that keep the game free can be more relevant. The lifetime unlock removes ads entirely."
+        }
+      ],
+      "./plugins/withIOSSceneLifecycle.js",
+      [
+        "./plugins/withAndroidLocales",
+        {
+          "locales": [
+            "en",
+            "es",
+            "fr",
+            "de",
+            "ru",
+            "zh",
+            "ja",
+            "pt",
+            "ko",
+            "it",
+            "tr",
+            "ar",
+            "fa",
+            "el"
+          ]
+        }
+      ],
+      "./plugins/withAndroidRtl"
+    ],
+    "extra": {
+      "puzzleApiUrl": "",
+      "admob": {
+        "iosBanner": "",
+        "androidBanner": "",
+        "iosInterstitial": "",
+        "androidInterstitial": ""
+      },
+      "router": {},
+      "eas": {}
+    }
+  }
+}

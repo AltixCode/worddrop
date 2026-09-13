@@ -1,0 +1,126 @@
+# Core journey: open the app, play the day's puzzle to a conclusion, reach the
+# result screen and produce a share grid.
+#
+# Run against a RELEASE build (a debug build raises a dev-client alert that
+# hides the accessibility tree, and Fast Refresh produces spurious
+# navigation-context errors).
+#
+# Selector discipline (delivery playbook §15.4.1): anchor every wait on
+# something only the screen being waited for can satisfy, and assert the
+# outcome — never the button that dismisses it.
+appId: com.altixcode.worddrop
+---
+- launchApp:
+    clearState: true
+
+# The home screen is identified by its own CTA, not by the word "WordDrop",
+# which the header, the title bar and the share text all satisfy.
+- extendedWaitUntil:
+    visible:
+      id: "home-play"
+    timeout: 20000
+
+- tapOn:
+    id: "home-play"
+
+# The board is up once the keyboard is: the Enter key exists on no other screen.
+- extendedWaitUntil:
+    visible:
+      id: "key-enter"
+    timeout: 10000
+
+# Six distinct real words, spent one per row. They must be distinct: a repeated
+# guess is rejected by the game, so a loop over one word would never reach a
+# conclusion and the flow would hang rather than fail honestly.
+#
+# The board is only five letters wide on days whose answer is five letters, so
+# this flow is valid on those days. On a 4/6/7-letter day it will report not
+# enough letters — treat that as "not applicable today", not as a pass.
+# CRANE
+- tapOn:
+    id: "key-C"
+- tapOn:
+    id: "key-R"
+- tapOn:
+    id: "key-A"
+- tapOn:
+    id: "key-N"
+- tapOn:
+    id: "key-E"
+- tapOn:
+    id: "key-enter"
+# MOIST
+- tapOn:
+    id: "key-M"
+- tapOn:
+    id: "key-O"
+- tapOn:
+    id: "key-I"
+- tapOn:
+    id: "key-S"
+- tapOn:
+    id: "key-T"
+- tapOn:
+    id: "key-enter"
+# PLUCK
+- tapOn:
+    id: "key-P"
+- tapOn:
+    id: "key-L"
+- tapOn:
+    id: "key-U"
+- tapOn:
+    id: "key-C"
+- tapOn:
+    id: "key-K"
+- tapOn:
+    id: "key-enter"
+# BADGE
+- tapOn:
+    id: "key-B"
+- tapOn:
+    id: "key-A"
+- tapOn:
+    id: "key-D"
+- tapOn:
+    id: "key-G"
+- tapOn:
+    id: "key-E"
+- tapOn:
+    id: "key-enter"
+# WHIFF
+- tapOn:
+    id: "key-W"
+- tapOn:
+    id: "key-H"
+- tapOn:
+    id: "key-I"
+- tapOn:
+    id: "key-F"
+- tapOn:
+    id: "key-F"
+- tapOn:
+    id: "key-enter"
+# VEXED
+- tapOn:
+    id: "key-V"
+- tapOn:
+    id: "key-E"
+- tapOn:
+    id: "key-X"
+- tapOn:
+    id: "key-E"
+- tapOn:
+    id: "key-D"
+- tapOn:
+    id: "key-enter"
+
+# The result screen owns the share button; the home screen never shows it.
+- extendedWaitUntil:
+    visible:
+      id: "result-share"
+    timeout: 15000
+
+# The grid itself must be on screen — a result screen with no grid is the
+# failure this gate exists to catch.
+- assertVisible: "🟩|⬜|🟨|🟦|🟧"

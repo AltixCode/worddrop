@@ -1,0 +1,78 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runner (self-hosted first; hosted is backup)'
+        required: true
+        default: 'self-hosted'
+        type: choice
+        options: [self-hosted, github-hosted]
+
+concurrency:
+  group: ci-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Typecheck, Tests & Bundle Verification
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'github-hosted' && 'ubuntu-24.04' || fromJSON('["self-hosted", "linux", "x64"]') }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: TypeScript Typecheck
+        run: npm run typecheck
+
+      - name: Unit Tests
+        run: npm test -- --ci
+
+      - name: i18n Completeness
+        run: node scripts/check-i18n.mjs
+
+      - name: Generated Data Is Up To Date
+        run: |
+          node scripts/build-answers.mjs
+          git diff --exit-code -- src/data/answers.ts backend/src/answers.json
+
+      - name: Validate Expo Configuration
+        run: npx expo config --type public
+
+      - name: Verify iOS Bundle Export
+        run: npm run export:ios
+
+      - name: Verify Android Bundle Export
+        run: npm run export:android
+
+  worker:
+    name: Puzzle Worker
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'github-hosted' && 'ubuntu-24.04' || fromJSON('["self-hosted", "linux", "x64"]') }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Worker Dependencies
+        run: cd backend && npm ci
+
+      - name: Typecheck Worker
+        run: cd backend && npm run typecheck
+
+      - name: Client/Worker Parity Tests
+        run: cd backend && npm test

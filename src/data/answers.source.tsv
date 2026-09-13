@@ -1,0 +1,551 @@
+# WordDrop daily answers — one per line: WORD<TAB>CATEGORY<TAB>CLUE
+# Every word is film-related. Clues are spoiler-free nudges, never definitions
+# that give the letters away. Lines starting with # are ignored.
+# Curated by hand; top the list up before it cycles (see docs/word-list.md).
+ACTOR	Cast	The person the camera is pointed at
+CAMEO	Cast	A famous face, on screen for a moment
+EXTRA	Cast	Background performer, no lines
+LEAD	Cast	Top of the call sheet
+STAR	Cast	Name above the title
+STUNT	Cast	The dangerous bit, done by a specialist
+DOUBLE	Cast	Stands in when the lead cannot
+CASTING	Cast	The search for the right face
+SCENE	Craft	One continuous piece of the story
+TAKE	Craft	Try it again, from the top
+SHOT	Craft	What the camera records in one go
+ANGLE	Craft	Where the camera is looking from
+FRAME	Craft	One still image of many per second
+FOCUS	Craft	Where the lens is sharp
+ZOOM	Craft	The lens moves in without the camera
+TILT	Craft	The camera looks up or down
+DOLLY	Craft	Wheeled platform for a moving shot
+CRANE	Craft	Lifts the camera high above the set
+TRACK	Craft	Rails the camera rolls along
+LENS	Craft	Glass that decides how it looks
+FILTER	Craft	Glass that changes the light
+GRAIN	Craft	The texture film stock leaves behind
+DEPTH	Craft	How much stays in focus behind the subject
+CLOSEUP	Craft	Fills the frame with a face
+MASTER	Craft	The wide take that covers the whole scene
+INSERT	Craft	A quick detail shot cut in later
+MONTAGE	Craft	Time passes in a hurry
+SPLICE	Craft	Joining two pieces of film
+EDITOR	Crew	Decides what the audience never sees
+GAFFER	Crew	In charge of the lights
+GRIP	Crew	Moves everything the camera sits on
+BOOM	Crew	Microphone on a long pole
+FOLEY	Crew	Footsteps recorded after the fact
+MIXER	Crew	Balances the soundtrack
+SCORE	Crew	Music written for the picture
+SCRIPT	Writing	The words before the pictures
+DRAFT	Writing	One version of many
+PLOT	Writing	What happens, in order
+TWIST	Writing	The turn nobody saw coming
+TROPE	Writing	A device the audience already knows
+MOTIF	Writing	An image that keeps returning
+THEME	Writing	What the film is really about
+LOGLINE	Writing	The whole film in one sentence
+OUTLINE	Writing	The shape before the dialogue
+DIALOG	Writing	Characters, talking
+VOICE	Writing	Heard, not seen
+SEQUEL	Release	What happens next, a year later
+PREQUEL	Release	What happened before, made after
+REBOOT	Release	Start the whole thing again
+REMAKE	Release	Someone made it better, or worse
+SERIES	Release	It keeps going
+TRILOGY	Release	Three, and they meant it
+DEBUT	Release	The first one
+TRAILER	Release	Two minutes to sell you the rest
+TEASER	Release	Even shorter than that
+POSTER	Release	The film, on a wall
+CREDITS	Release	The names, at the end
+TITLE	Release	What it is called
+RATING	Release	Who is allowed in
+SCREEN	Cinema	Where the picture lands
+STAGE	Cinema	Boards to be trodden
+MATINEE	Cinema	The early showing
+USHER	Cinema	Shows you to your seat
+TICKET	Cinema	Your way in
+POPCORN	Cinema	The smell of the lobby
+LOBBY	Cinema	Before the doors open
+AISLE	Cinema	The walk to your row
+BALCONY	Cinema	The expensive seats, once
+PROJECT	Cinema	Throw the picture at the wall
+REEL	Cinema	What the film was wound on
+SPOOL	Cinema	Takes the film up as it runs
+DRAMA	Genre	Serious people, serious trouble
+COMEDY	Genre	Meant to make you laugh
+HORROR	Genre	Meant to make you look away
+ACTION	Genre	Things move fast and explode
+ROMANCE	Genre	Two people, eventually
+WESTERN	Genre	Horses, dust and a long stare
+NOIR	Genre	Rain, shadows and bad decisions
+EPIC	Genre	Very long, very large
+MUSICAL	Genre	They sing about it
+FANTASY	Genre	Magic is allowed
+SLASHER	Genre	The horror one with a body count
+SATIRE	Genre	Mocking something on purpose
+PARODY	Genre	Mocking another film on purpose
+CAPER	Genre	A charming crime
+HEIST	Genre	The plan, the vault, the getaway
+SPOOF	Genre	A joke at a genre's expense
+BUDDY	Genre	Two mismatched partners
+ANIME	Genre	Animation with a Japanese accent
+SHORT	Format	Under forty minutes
+FEATURE	Format	The main event
+SILENT	Format	Cards instead of dialogue
+TALKIE	Format	When films learned to speak
+MONO	Format	One channel of sound
+STEREO	Format	Two channels of sound
+WIDE	Format	A frame far broader than it is tall
+SCOPE	Format	The very wide one
+IMAX	Format	The very large one
+PIXEL	Format	The smallest part of the picture
+CODEC	Format	How the picture is squeezed
+STREAM	Format	No disc required
+OSCAR	Award	The gold one, in February
+PALME	Award	The Cannes prize, a golden leaf
+BAFTA	Award	The British academy's choice
+NOMINEE	Award	Named, but not yet called
+WINNER	Award	Called
+GALA	Award	The dressed-up evening
+PRIZE	Award	What the jury hands over
+JURY	Award	Decides who takes it home
+STUDIO	Business	Where the money comes from
+BUDGET	Business	What the money runs out of
+GROSS	Business	Everything the tickets took
+PROFIT	Business	What survives the accountants
+INDIE	Business	Made outside the big gates
+PITCH	Business	Selling the idea in a room
+GREEN	Business	The light that starts production
+OPTION	Business	Buying the right to try
+RIGHTS	Business	Who is allowed to make it
+DEAL	Business	Signed before the shooting starts
+PROP	On Set	Anything an actor picks up
+SLATE	On Set	Clap it before the take
+CLAP	On Set	The sound that syncs the picture
+MARK	On Set	Stand exactly here
+RIGGING	On Set	Holds the lights up
+TRUSS	On Set	Metal frame above the stage
+FLAG	On Set	Blocks light where you do not want it
+GOBO	On Set	Casts a pattern of light
+SCRIM	On Set	Softens a lamp
+DIMMER	On Set	Turns the light down
+SPOT	On Set	One bright pool of light
+FILL	On Set	Softens the shadow on the other side
+BOUNCE	On Set	Light thrown off a white surface
+BACKLOT	On Set	A street that is only a facade
+GREENS	On Set	The screen that becomes anything
+MATTE	On Set	A painted world beyond the set
+MODEL	On Set	A small thing filmed to look huge
+CABLE	On Set	Underfoot, everywhere
+WRAP	On Set	That is a day
+RESET	On Set	Put everything back for another take
+QUIET	On Set	What the floor wants before a take
+SOUND	On Set	Rolling before the camera does
+SPEED	On Set	The recorder is up to pace
+MAKEUP	On Set	Faces, fixed before the take
+COSTUME	On Set	What the character wears
+MASK	On Set	Hides the face entirely
+LATEX	On Set	Skin that is not skin
+BLOOD	On Set	Corn syrup, mostly
+SQUIB	On Set	The small charge that fakes a hit
+RECOIL	On Set	The kick that has to look real
+HERO	Character	Carries the story
+VILLAIN	Character	Gets in the way of it
+MENTOR	Character	Teaches, then leaves
+ROGUE	Character	Charming and unreliable
+RIVAL	Character	Wants the same thing
+GHOST	Character	Should not be there at all
+ALIEN	Character	Not from here
+ROBOT	Character	Built, not born
+CYBORG	Character	Some of both
+WIZARD	Character	Magic is their job
+PIRATE	Character	Ship, sword and a bad accent
+COWBOY	Character	Hat, horse, horizon
+DETECT	Character	Works out who did it
+SOLDIER	Character	Follows orders, usually
+NURSE	Character	Keeps somebody alive
+PILOT	Character	Both a flyer and a first episode
+CAPTAIN	Character	In charge of the ship
+KING	Character	Wears the crown
+QUEEN	Character	Wears it better
+PRINCE	Character	Next in line
+KNIGHT	Character	Armour and a code
+MONSTER	Character	The thing in the dark
+ZOMBIE	Character	Slow, hungry, numerous
+VAMPIRE	Character	Avoids the daylight
+GIANT	Character	Takes up most of the frame
+DWARF	Character	Small, and usually mining
+DRAGON	Character	Fire, wings, and a hoard
+CHASE	Action	Somebody is running
+ESCAPE	Action	Out, before they notice
+RESCUE	Action	In, because somebody is stuck
+DUEL	Action	Two people, one settlement
+BRAWL	Action	Everyone joins in
+FIGHT	Action	Choreographed to look unplanned
+PUNCH	Action	Never actually lands
+BLAST	Action	Loud, orange, expensive
+CRASH	Action	Something stops badly
+LEAP	Action	The gap is bigger than it looks
+CLIMB	Action	Up, without a net
+DIVE	Action	Down, on purpose
+SHOOT	Action	Both a gun and a film day
+AMBUSH	Action	They were waiting
+SIEGE	Action	Nobody is going anywhere
+BATTLE	Action	The big one, near the end
+FUSE	Action	Burning, and short
+BOMB	Action	Both a device and a flop
+BACKUP	Action	Arrives at the last minute
+SAFE	Action	What the heist is after
+VAULT	Action	Where they keep it
+ALARM	Action	The plan going wrong
+GETAWAY	Action	The part they rehearsed
+DECOY	Action	Looks like the real thing
+CLUE	Story	Points at the answer
+ALIBI	Story	Where they claim they were
+MOTIVE	Story	Why they did it
+SUSPECT	Story	Probably not them
+WITNESS	Story	Saw it happen
+VERDICT	Story	What the jury says
+TRIAL	Story	Where the shouting happens
+APPEAL	Story	Try the verdict again
+ORDEAL	Story	The bad stretch in the middle
+QUEST	Story	A long way to fetch something
+JOURNEY	Story	Getting there is the point
+RETURN	Story	Coming home changed
+REVENGE	Story	A dish served cold
+SECRET	Story	Everyone will know by the end
+RUMOUR	Story	Not true yet
+LEGEND	Story	Too good to check
+MYTH	Story	Older than anyone telling it
+OMEN	Story	A bad sign, early
+CURSE	Story	Inherited trouble
+SPELL	Story	Words with consequences
+PORTAL	Story	A door to somewhere else
+FUTURE	Story	Where the sequels live
+PAST	Story	Where the flashbacks live
+DREAM	Story	None of it was real
+MEMORY	Story	Shot slightly softer
+FLASH	Story	Back, usually
+ECHO	Sound	The room answering back
+SILENCE	Sound	Used on purpose, loudly
+CHORD	Sound	Three notes at once
+TEMPO	Sound	How fast it all feels
+ORGAN	Sound	Accompanied the silent era
+STING	Sound	A short shock of music
+DRONE	Sound	A low note under everything
+AMBIENT	Sound	The room, recorded
+NOISE	Sound	What the mixer removes
+LEVEL	Sound	Too high and it clips
+MUTE	Sound	Nothing at all
+RUSHES	Post	Yesterday's takes, seen today
+DAILIES	Post	The same thing, in American
+ROUGH	Post	The first assembly
+FINAL	Post	The last one, allegedly
+TRIM	Post	Shaving frames off a shot
+FADE	Post	The picture goes away slowly
+WIPE	Post	One image pushes the other off
+JUMP	Post	A cut that deliberately jars
+MATCH	Post	A cut that deliberately does not
+SPLIT	Post	Sound arrives before picture
+GRADE	Post	Deciding the colour of everything
+TINT	Post	A wash of colour over the frame
+RENDER	Post	Waiting for the computer
+PLATE	Post	The clean background shot
+TITLES	Post	Names over the opening
+CRAWL	Post	Text that climbs the screen
+CAPTION	Post	Words for those who cannot hear
+PROOF	Post	Checked before it ships
+ARCHIVE	Post	Where old films go to survive
+RESTORE	Post	Making an old print watchable
+FILM	General	The thing itself
+MOVIE	General	The same thing, informally
+CINEMA	General	Both the place and the art
+PICTURE	General	What they called it first
+FLICK	General	Casual name for a film
+STORY	General	Why anyone came
+CRITIC	General	Writes about it afterwards
+REVIEW	General	Stars, or the lack of them
+CLASSIC	General	Still watched decades later
+CULT	General	Small audience, fierce loyalty
+FLOP	General	Nobody came
+SLEEPER	General	Found its audience late
+SPOILER	General	Do not read the comments
+CAMERA	Gear	Records the light
+TRIPOD	Gear	Three legs and no wobble
+GIMBAL	Gear	Keeps the shot smooth while walking
+STEADI	Gear	The rig that floats the camera
+MONITOR	Gear	What the director actually watches
+BATTERY	Gear	Always the thing that runs out
+SENSOR	Gear	The digital replacement for film
+SHUTTER	Gear	Decides how motion blurs
+MOUNT	Gear	Where the lens meets the body
+HOOD	Gear	Keeps stray light off the glass
+CLAMP	Gear	Holds it where nothing else will
+TAPE	Gear	Solves most problems on set
+CART	Gear	Wheels the gear from A to B
+CASE	Gear	Nothing travels unpacked
+STOCK	Gear	What you shoot on
+SPLICER	Gear	Joins two lengths of film
+BULB	Gear	Burns out at the worst moment
+LAMP	Gear	One unit of light
+STAND	Gear	Holds the lamp up
+SANDBAG	Gear	Stops the stand falling over
+DESERT	Place	Hot, empty, photogenic
+JUNGLE	Place	Green, loud, difficult
+ISLAND	Place	Nobody leaves easily
+CASTLE	Place	Stone and trouble
+MANOR	Place	Too many rooms, one secret
+CABIN	Place	Isolated, unwisely
+BUNKER	Place	Underground and tense
+TUNNEL	Place	Only one way through
+BRIDGE	Place	Somebody will cross it slowly
+HARBOUR	Place	Ships and goodbyes
+DINER	Place	Coffee at three in the morning
+SALOON	Place	Swing doors, bad piano
+ARENA	Place	Everyone watching the middle
+PRISON	Place	Somebody plans to leave
+ASYLUM	Place	Nothing here is calm
+MARKET	Place	Chase scene waiting to happen
+ROOFTOP	Place	The chase ends up here
+ALLEY	Place	Nothing good happens here
+SUBWAY	Place	Underground, badly lit
+MANSION	Place	The party before the murder
+TEMPLE	Place	Old stone, older rules
+RUINS	Place	Somebody built this once
+ORBIT	Place	Around something large
+PLANET	Place	Somewhere else entirely
+GALAXY	Place	Far, far away
+STATION	Place	Space, or the train kind
+COLONY	Place	People far from home
+ANIMATE	Animation	Twelve drawings a second
+CARTOON	Animation	Drawn, and proud of it
+CELS	Animation	Painted sheets, stacked
+FRAMES	Animation	Drawn one at a time
+PUPPET	Animation	Moved by hand, patiently
+RIGGED	Animation	Given bones to move with
+TWEEN	Animation	The computer fills the gap
+SQUASH	Animation	Half of a famous animation rule
+STRETCH	Animation	The other half
+LIPSYNC	Animation	Mouths matching the dialogue
+SCOUT	Prep	Finding the location first
+RECCE	Prep	The visit before the shoot
+CALL	Prep	When you have to be there
+PERMIT	Prep	Permission to close the street
+TABLE	Prep	The first read of the script
+DOCU	Nonfiction	Real people, real trouble
+VERITE	Nonfiction	The camera pretends to be absent
+FOOTAGE	Nonfiction	Material, not yet a film
+INTER	Nonfiction	The sit-down conversation
+NARRATE	Nonfiction	The voice explaining it
+EXPOSE	Nonfiction	Something somebody wanted hidden
+ESSAY	Nonfiction	An argument, in pictures
+SERIAL	History	A chapter a week at the cinema
+NICKEL	History	What a seat once cost
+CENSOR	History	Decided what you could not see
+CODE	History	The rules the studios wrote
+NEWWAVE	History	The young ones broke the rules
+AUTEUR	History	The director as the author
+MOGUL	History	Ran a studio like a kingdom
+PIONEER	History	Got there first
+SILENTS	History	Before the microphones
+DRIVEIN	History	Watch it from the car
+VIDEO	History	Cinema arrived at home
+RENTAL	History	Be kind, rewind
+DISC	History	The shiny replacement for tape
+PLAY	Stage	What happens before the film rights
+CURTAIN	Stage	Up at the start, down at the end
+WINGS	Stage	Waiting, just out of sight
+PROPS	Stage	Everything handled on stage
+REVIVAL	Stage	An old show, staged again
+ENCORE	Stage	They want one more
+TOUR	Stage	The show, on the road
+BUYER	Industry	Decides what your country sees
+AGENT	Industry	Takes the call so the star does not
+UNION	Industry	Decides when the day ends
+CREDIT	Industry	Whose name goes on it
+GUILD	Industry	Argues about that credit
+QUOTA	Industry	How many must be made at home
+SUBSIDY	Industry	Public money, local films
+PITCHES	Industry	A morning of hopeful rooms
+RELEASE	Industry	Out, at last
+WINDOW	Industry	How long before it streams
+PIRACY	Industry	The copy nobody paid for
+LICENCE	Industry	Permission, in writing
+ROYALTY	Industry	Paid each time it plays
+TENSION	Feel	Something is about to happen
+DREAD	Feel	You would rather it did not
+RELIEF	Feel	It turned out fine
+WONDER	Feel	The reason for the big screen
+PATHOS	Feel	The sad part, earned
+IRONY	Feel	The audience knows more
+COMIC	Feel	Timing, mostly
+CHARM	Feel	Why you forgive the plot
+PACE	Feel	How fast it feels, not is
+BEAT	Feel	The smallest unit of story
+PAUSE	Feel	The gap that does the work
+MOOD	Feel	What the lighting is for
+TONE	Feel	Funny or serious, and consistent
+STYLE	Feel	How it is told, not what
+CRAFT	Feel	The part nobody notices
+MAGIC	Feel	What it feels like when it works
+CLIMAX	Structure	The top of the story
+OPENING	Structure	The first five minutes
+ENDING	Structure	The last five
+MIDDLE	Structure	Where films go to die
+SETUP	Structure	The promise made early
+PAYOFF	Structure	The promise kept late
+HOOK	Structure	Why you stayed past the titles
+STAKES	Structure	What is lost if they fail
+RESOLVE	Structure	Tie it off
+CLIFF	Structure	Hanging, until next time
+REVEAL	Structure	Now you know
+CHAPTER	Structure	A titled section
+ACTONE	Structure	Everything before the trouble
+FLARE	Craft	Light bouncing around inside the lens
+BOKEH	Craft	The soft shape of out-of-focus lights
+CROP	Craft	Cut in from the edges of the frame
+PROFILE	Craft	The face, from the side
+TWOSHOT	Craft	Two people sharing one frame
+OVER	Craft	Filmed past somebody's shoulder
+POINT	Craft	Seeing it through their eyes
+LOWKEY	Craft	Mostly shadow, on purpose
+HIGHKEY	Craft	Barely a shadow anywhere
+SHADOW	Craft	Where the light did not reach
+LIGHT	Craft	The raw material of the medium
+COLOR	Craft	Chosen, never accidental
+SEPIA	Craft	Brown, and therefore the past
+BLACK	Craft	Half of the oldest palette
+WHITE	Craft	The other half
+SHARP	Craft	Every edge defined
+BLUR	Craft	Nothing quite defined
+STILL	Craft	A single frame, held
+MOTION	Craft	Twenty-four of them a second
+SLOWMO	Craft	Shot fast, played slow
+LOOP	Craft	It plays again, and again
+CYCLE	Craft	The repeat that hides the seam
+CANVAS	Craft	What the frame really is
+IMAGE	Craft	One picture among thousands
+VISUAL	Craft	Told with the eyes, not the ears
+OPTIC	Craft	Belonging to the lens
+PRISM	Craft	Splits light into colour
+MIRROR	Craft	The shot that hides the crew badly
+GLASS	Craft	What the lens is made of
+SMOKE	Craft	Makes the light beams visible
+STEAM	Craft	Atmosphere, on demand
+RAIN	Craft	Almost always from a hose
+STORM	Craft	Wind, water and a big fan
+SNOW	Craft	Usually paper, sometimes foam
+WIND	Craft	A machine, just off frame
+FIRE	Craft	Supervised, insured, terrifying
+FLAME	Craft	The small, controlled kind
+SPARK	Craft	Also what a lighting technician is called
+ASHES	Craft	What is left after the big scene
+DUST	Craft	Makes a light beam show up
+THIEF	Character	Takes what is not theirs
+JUDGE	Character	Decides at the end of the trial
+PRIEST	Character	Knows what everybody confessed
+DOCTOR	Character	Also a very long-running one
+TEACHER	Character	Changes one student's life
+SAILOR	Character	At home only at sea
+RANGER	Character	Knows the wilderness
+HUNTER	Character	Tracks the thing down
+RAIDER	Character	Takes the relic and runs
+REBEL	Character	Against whatever there is
+TRAITOR	Character	Was on your side yesterday
+MARTYR	Character	Pays for everybody else
+ORACLE	Character	Tells you something unhelpful and true
+HEALER	Character	Puts the party back together
+SCRIBE	Character	Writes it all down
+BARD	Character	Sings the story afterwards
+JESTER	Character	Only one allowed to mock the king
+TYRANT	Character	Rules badly, loudly
+WARDEN	Character	Runs the prison
+SHERIFF	Character	The badge in a small town
+OUTLAW	Character	Wanted, and enjoying it
+BANDIT	Character	Robs the stagecoach
+GUNMAN	Character	Faster than the other one
+MARSHAL	Character	The law, riding in
+DEPUTY	Character	Second badge in town
+POSSE	Character	Rounded up to give chase
+STEED	Character	Carries the hero away
+RIDDLE	Story	Answer it or else
+PUZZLE	Story	The pieces are all here
+CIPHER	Story	Written so only one person can read it
+TOKEN	Story	Small object, large meaning
+RELIC	Story	Old, powerful, badly guarded
+AMULET	Story	Worn for protection
+SWORD	Story	Drawn at the worst moment
+SHIELD	Story	Between the hero and the end
+ARMOR	Story	Heavy, and eventually pierced
+HELMET	Story	Hides the face until it does not
+DAGGER	Story	Small, quiet and close
+ARROW	Story	Arrives before the shooter is seen
+TORCH	Story	Fire, carried into the dark
+LANTERN	Story	Light for a night journey
+COMPASS	Story	Points somewhere, not always north
+ANCHOR	Story	Stops the ship, or the news
+VESSEL	Story	Carries them across
+ROCKET	Story	Up, loudly
+SHUTTLE	Story	The small ship from the big one
+CAPSULE	Story	What comes back down
+ENGINE	Story	Stops working at the worst time
+REACTOR	Story	Going critical, obviously
+CIRCUIT	Story	Something to cut in the last minute
+MACHINE	Story	Built to do one thing well
+ANDROID	Story	Looks human, is not
+CLONE	Story	There is more than one of them
+MUTANT	Story	Changed, and not asked first
+SERUM	Story	One dose fixes everything
+VIRUS	Story	Spreads faster than the plot
+PLAGUE	Story	The reason the city is empty
+SEATS	Cinema	Row after row in the dark
+FOYER	Cinema	Where you wait for the doors
+KIOSK	Cinema	Sells the overpriced snacks
+NACHOS	Cinema	The loud snack, sadly
+SODA	Cinema	Comes in one size only: large
+STUB	Cinema	What is left of the ticket
+QUEUE	Cinema	Opening night, around the block
+CROWD	Cinema	Laughs better than you do alone
+LIGHTS	Cinema	Down, before it starts
+FUNDING	Industry	Somebody has to pay for it
+GRANT	Industry	Money that is not a loan
+INVEST	Industry	Betting on a film
+SCREENS	Industry	How wide it opens
+PRINTS	Industry	Copies sent to cinemas
+TEASERS	Industry	The first look, deliberately short
+PRESS	Industry	Interviews all day, same questions
+JUNKET	Industry	The hotel where that happens
+EMBARGO	Industry	Nobody may print it yet
+PREVIEW	Industry	An audience before the audience
+AWARDS	Industry	The season with the speeches
+BALLOT	Industry	How the academy decides
+VOTES	Industry	Counted in secret
+SPEECH	Industry	Too long, and they play the music
+THANKS	Industry	The agent, the parents, the dog
+STATUE	Industry	What the winner carries home
+CARPET	Industry	Red, and very long
+TUXEDO	Industry	The uniform of the evening
+WRITER	Crew	Was there first, thanked last
+ARTIST	Crew	Designs what the world looks like
+PAINTER	Crew	Makes new wood look ancient
+DRIVER	Crew	Moves the unit at dawn
+RUNNER	Crew	Does everything nobody else has time for
+INTERN	Crew	Learns by fetching things
+CREW	Crew	Everyone not in front of the lens
+UNIT	Crew	The second one shoots the landscapes
+TEAM	Crew	Works as one, on a good day
+SHIFT	Crew	Twelve hours, if you are lucky
+BREAK	Crew	Ten minutes, if you are luckier
+LUNCH	Crew	Six hours in, contractually
+COFFEE	Crew	The actual fuel of production
+FILMED	Craft	Committed to the record
+FRAMED	Craft	Composed inside the rectangle
+CUTTING	Post	Choosing where each shot ends
+EDITING	Post	Where the film is really written
+MIXING	Sound	Blending dialogue, effects and music
+SCORING	Sound	Recording the music to picture
+FILMING	On Set	The days everyone remembers
+ACTING	Cast	Pretending, convincingly
+STAGED	On Set	Arranged to look unarranged

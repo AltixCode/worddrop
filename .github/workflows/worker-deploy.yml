@@ -1,0 +1,54 @@
+name: Deploy Puzzle Worker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/worker-deploy.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: worker-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: wrangler deploy
+    runs-on: [self-hosted, linux, x64]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: cd backend && npm ci
+
+      - name: Typecheck & Parity Tests
+        run: |
+          cd backend
+          npm run typecheck
+          npm test
+
+      # Deployment stays off until the KV namespace ids in wrangler.toml are
+      # real and CLOUDFLARE_API_TOKEN exists, so the job is green but inert
+      # rather than failing on every push in the meantime.
+      - name: Deploy to Cloudflare
+        if: ${{ vars.ENABLE_WORKER_DEPLOY == 'true' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          : "${CLOUDFLARE_API_TOKEN:?Missing CLOUDFLARE_API_TOKEN}"
+          : "${CLOUDFLARE_ACCOUNT_ID:?Missing CLOUDFLARE_ACCOUNT_ID}"
+          cd backend
+          npx wrangler deploy
+
+      - name: Report Skipped Deployment
+        if: ${{ vars.ENABLE_WORKER_DEPLOY != 'true' }}
+        run: |
+          echo "::warning::Worker deployment is disabled (repository variable ENABLE_WORKER_DEPLOY is not 'true')."

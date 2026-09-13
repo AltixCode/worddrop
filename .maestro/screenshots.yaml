@@ -1,0 +1,39 @@
+# Store screenshots, captured from the real build. Never a marketing render.
+# Run per device class; the files land in the Maestro output directory.
+appId: com.altixcode.worddrop
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "home-play"
+    timeout: 20000
+- takeScreenshot: 01-home
+
+- tapOn:
+    id: "home-play"
+- extendedWaitUntil:
+    visible:
+      id: "key-enter"
+    timeout: 10000
+- tapOn:
+    id: "key-C"
+- tapOn:
+    id: "key-R"
+- tapOn:
+    id: "key-A"
+- tapOn:
+    id: "key-N"
+- tapOn:
+    id: "key-E"
+- tapOn:
+    id: "key-enter"
+- takeScreenshot: 02-board
+
+- back
+- tapOn: ".*Statistics.*"
+- takeScreenshot: 03-stats
+
+- back
+- tapOn: ".*Settings.*"
+- takeScreenshot: 04-settings
