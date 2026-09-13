@@ -5,7 +5,7 @@ but nothing has been launched on a device or an emulator yet, and no store or
 service account has been configured. Everything unverified below is recorded as
 `UNKNOWN`, never as a pass.
 
-- **Date**: 2026-09-13 (local)
+- **Date**: 2026-09-14 (local; scaffolded 2026-09-13)
 - **Repository**: https://github.com/atasmohammadi/worddrop (private)
 - **Scope of this pass**: full scaffold from
   `02-daily-word-puzzle-implementation-plan.md` — game, backend Worker, ads,
@@ -16,7 +16,7 @@ service account has been configured. Everything unverified below is recorded as
 | Check | Command | Result |
 | --- | --- | --- |
 | Types | `npm run typecheck` | **PASS** — no errors |
-| Unit tests | `npm test` | **PASS** — 7 suites, 64 tests |
+| Unit tests | `npm test` | **PASS** — 9 suites, 89 tests |
 | i18n completeness | `node scripts/check-i18n.mjs` | **PASS** — 14 locales × 114 keys |
 | Generated data | `node scripts/build-answers.mjs` | **PASS** — 547 answers (4:83, 5:189, 6:176, 7:99) |
 | Guess dictionary | `node scripts/build-dictionary.mjs` | **PASS** — 48,501 words (4:4360, 5:8506, 6:15073, 7:20562) |
@@ -49,6 +49,24 @@ Delivery playbook §15.4 gates 3–6, in full:
   `REPLACE_WITH_KV_NAMESPACE_ID`, and `extra.puzzleApiUrl` is empty, so the app
   currently plays entirely from its bundled list.
 
+## Done outside this repository
+
+- **Legal profile written.** `worddrop` added to `APP_LEGAL_PROFILES` in
+  `HushTunnel-Billing-Dashboard/lib/legal/altixcode-apps.ts`, and the legal page
+  template extended to handle an ad-supported app: the boilerplate there claimed
+  "no advertising SDK" and "we do not collect personal information", which would
+  have been a false statement and a store rejection for this app. It now renders
+  an Advertising section naming AdMob, what the SDK receives, how UMP consent and
+  ATT are handled, and that the one-time purchase ends it.
+  **Left uncommitted in that repository** — it also holds someone's in-progress
+  legal route, and the staged `slideforge` entry there is missing the required
+  `networkUse` and `processedLocally` fields, so the file does not compile yet.
+  That error is pre-existing and needs SlideForge'struthful copy, not a guess.
+- **Store listing copy written.** `worddrop` added to
+  `Dev/scripts/store-metadata.json` with English plus `de`, `fr`, `es` and `it`,
+  and `node scripts/check-store-metadata.mjs` reports every field within limits.
+  `ascAppId` is empty until the App Store Connect record exists.
+
 ## Blockers before submission
 
 1. Create the KV namespace, fill `backend/wrangler.toml`, deploy the Worker, set
@@ -59,9 +77,9 @@ Delivery playbook §15.4 gates 3–6, in full:
    `EXPO_PUBLIC_RC_ANDROID_KEY` in the build environment.
 3. AdMob: create the app on both platforms and four ad units; replace the test
    app ids in `app.json` and fill `extra.admob`.
-4. Legal pages: add a `worddrop` entry to `APP_LEGAL_PROFILES` in
-   `HushTunnel-Billing-Dashboard`, and confirm both URLs return 200. They must
-   disclose RevenueCat **and** AdMob — this app is not a "collects no data" app.
+4. Legal pages: the `worddrop` entry is written (see above) but is **not
+   deployed**. Fix the unrelated `slideforge` compile error, commit, deploy the
+   dashboard, then confirm both URLs return 200.
 5. Play Console: create the application record by hand (the API cannot), then
    grant the service account access.
 6. Run gates 3–6 on both a simulator and an emulator; capture store screenshots
