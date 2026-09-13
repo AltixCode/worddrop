@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
-import { useGameStore, boardAnswer, boardGuesses, type Board } from '../store/useGameStore';
+import { useGameStore, safeBoardAnswer, boardGuesses, type Board } from '../store/useGameStore';
 import { resolvePuzzle, type PuzzleSource } from '../services/puzzleService';
 import { mergeKeyboardStates } from '../game/evaluateGuess';
 import { isValidGuess } from '../game/dictionary';
@@ -69,7 +69,7 @@ export function useDailyGame(date: string): DailyGame {
   const played = useMemo(() => (board ? boardGuesses(board) : []), [board]);
   const keyboard = useMemo(() => mergeKeyboardStates(played), [played]);
   const status: GameStatus = board?.status ?? 'in_progress';
-  const answer = board && status !== 'in_progress' ? boardAnswer(board) : null;
+  const answer = board && status !== 'in_progress' ? safeBoardAnswer(board) : null;
 
   const reject = useCallback(
     (text: string) => {
@@ -112,7 +112,7 @@ export function useDailyGame(date: string): DailyGame {
 
     const outcome = commitGuess(date, current);
     if (outcome.status !== 'accepted') {
-      reject(t('notInWordList'));
+      reject(outcome.status === 'board_unreadable' ? t('error') : t('notInWordList'));
       return null;
     }
 

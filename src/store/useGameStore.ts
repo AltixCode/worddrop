@@ -29,8 +29,22 @@ export interface Board {
 
 export const boardAnswer = (board: Board): string => decodeAnswer(board.a);
 
+/**
+ * The answer, or null when the persisted board cannot be read back — a
+ * truncated write or a hand-edited backup would otherwise throw straight
+ * through a screen's render and take the app down on launch.
+ */
+export const safeBoardAnswer = (board: Board): string | null => {
+  try {
+    return boardAnswer(board);
+  } catch {
+    return null;
+  }
+};
+
 export const boardGuesses = (board: Board): PlayedGuess[] => {
-  const answer = boardAnswer(board);
+  const answer = safeBoardAnswer(board);
+  if (!answer) return [];
   return board.guesses.map((guess) => ({ guess, states: evaluateGuess(guess, answer) }));
 };
 
@@ -47,7 +61,9 @@ export type SubmitOutcome =
   | { status: 'too_short' }
   | { status: 'unknown_word' }
   | { status: 'already_finished' }
-  | { status: 'duplicate_guess' };
+  | { status: 'duplicate_guess' }
+  /** The persisted board could not be read back; it is rebuilt on next mount. */
+  | { status: 'board_unreadable' };
 
 /** Boards older than this are dropped; the archive re-creates them on demand. */
 const MAX_BOARDS = 90;
@@ -103,7 +119,9 @@ export const useGameStore = create<GameState>()(
         // A board already in progress is never replaced: the Worker and the
         // bundled list agree on the answer, but if they ever did not, silently
         // swapping the word mid-game would invalidate the guesses on screen.
-        if (existing) return existing;
+        // An unreadable board is the one exception — it is rebuilt rather than
+        // left to throw on every render of that day.
+        if (existing && safeBoardAnswer(existing) !== null) return existing;
 
         const board: Board = {
           date: puzzle.date,
@@ -128,7 +146,8 @@ export const useGameStore = create<GameState>()(
         if (word.length !== board.length) return { status: 'too_short' };
         if (board.guesses.includes(word)) return { status: 'duplicate_guess' };
 
-        const answer = boardAnswer(board);
+        const answer = safeBoardAnswer(board);
+        if (!answer) return { status: 'board_unreadable' };
         const won = isWinningGuess(evaluateGuess(word, answer));
         const guesses = [...board.guesses, word];
         const status: GameStatus = won
@@ -145,6 +164,9 @@ export const useGameStore = create<GameState>()(
         };
 
         set((s) => {
+          // An archive result older than the last completed day leaves the
+          // record untouched — `applyResult` ignores it — so replaying history
+          // can neither inflate nor break a live streak.
           const stats =
             status === 'in_progress'
               ? s.stats

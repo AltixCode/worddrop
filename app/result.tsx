@@ -3,7 +3,7 @@ import { View, Text, Pressable, Share, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Share2, Flame, BarChart3, Crown } from 'lucide-react-native';
-import { useGameStore, boardAnswer, boardGuesses } from '../src/store/useGameStore';
+import { useGameStore, safeBoardAnswer, boardGuesses } from '../src/store/useGameStore';
 import { useTheme } from '../src/theme/useTheme';
 import { useMidnightCountdown } from '../src/hooks/useCountdown';
 import { buildShareText, gridRow } from '../src/game/shareGrid';
@@ -84,7 +84,7 @@ export default function ResultScreen() {
               : t('resultLossTitle')}
           </Text>
           <Text style={{ fontSize: 15, color: theme.textSecondary }}>
-            {t('answerWas', { word: boardAnswer(board) })}
+            {t('answerWas', { word: safeBoardAnswer(board) ?? '—' })}
           </Text>
         </View>
 
