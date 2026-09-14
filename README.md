@@ -54,8 +54,15 @@ Nothing secret lives in the repo. Set before a store build:
 | `app.json` → `extra.admob.*` | Ad unit ids | Empty falls back to Google's **test** units, so a dev build never requests a live ad. |
 | `app.json` → plugin `react-native-google-mobile-ads` | App ids | Currently Google's public test app ids — replace with the real ones before submission. |
 
+## Testing a purchase
+
+`storekit/WordDrop.storekit` drives the paywall on a simulator with no App Store
+products and no sandbox account — see `storekit/README.md`, which also lists the
+four paths that must be exercised, not just the happy one.
+
 ## Documentation
 
+- `docs/setup-services.md` — Cloudflare, RevenueCat, AdMob and the store records
 - `docs/word-list.md` — how the answer list is curated and topped up
 - `docs/store-listing.md` — store metadata, ASO and the submission checklist
 - `HANDOFF.md` — what has actually been run and what has not

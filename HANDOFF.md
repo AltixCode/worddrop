@@ -67,6 +67,15 @@ Delivery playbook §15.4 gates 3–6, in full:
   apps. Both need an interactive sign-in (`rc apps apple setup appf5a028a41e`,
   `rc setup google`), so neither could be scripted here. Until then RevenueCat
   cannot validate a receipt.
+- **StoreKit test configuration exported** to `storekit/WordDrop.storekit` from
+  the RevenueCat catalogue, so the purchase, restore, cancel and offline paths
+  can be driven on a simulator before any store product exists. Its price and
+  copy are local test values; the paywall renders the live `priceString` and
+  never these.
+- **Play Console record confirmed absent.** `gplay edits create --package
+  com.altixcode.worddrop` returns `404 Package not found`, not `403` — so the
+  service account's access is fine and the application record simply has to be
+  created by hand in the Play Console first.
 - **Apple bundle identifier registered**: `com.altixcode.worddrop` →
   `23R989Y7B7`.
   **The App Store Connect app record does not exist and cannot be created by

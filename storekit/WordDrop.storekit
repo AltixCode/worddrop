@@ -1,0 +1,36 @@
+{
+  "appPolicies": {
+    "eula": "",
+    "policies": [
+      {
+        "locale": "en_US",
+        "policyText": "",
+        "policyURL": ""
+      }
+    ]
+  },
+  "identifier": "B884E471",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "5.99",
+      "familyShareable": false,
+      "internalID": "01E12EB2",
+      "localizations": [
+        {
+          "locale": "en_US",
+          "displayName": "WordDrop Lifetime",
+          "description": "Removes every advertisement for good and opens the archive of past puzzles. One payment, no subscription."
+        }
+      ],
+      "productID": "worddrop_lifetime",
+      "referenceName": "worddrop_lifetime",
+      "type": "NonConsumable"
+    }
+  ],
+  "subscriptionGroups": [],
+  "version": {
+    "major": 4,
+    "minor": 0
+  }
+}
