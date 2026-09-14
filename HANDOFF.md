@@ -158,6 +158,16 @@ Delivery playbook §15.4 gates 3–6, in full:
   the signing identity lives there and hosted macOS minutes bill at ten times the
   rate — so a release build needs either that runner registered to this repo, or
   a dispatch with `ios_runner: github-hosted`.
+- **Actions themselves are currently blocked account-wide.** After the runner
+  retarget, the hosted `Deploy Puzzle Worker` run still sits at `pending` with
+  **zero jobs ever created** (`gh run view <id> --json jobs` → `[]`) while
+  repository Actions report `enabled: true`. That is the signature of the
+  account's Actions storage quota being over, not of a missing runner: the
+  22 GB artifact purge on 2026-09-14 has not yet been reflected, and GitHub
+  recalculates usage only every 6–12 hours. **No workflow has therefore run
+  green against this repository yet** — everything recorded as PASS above was
+  run locally. Re-run the workflow once accounting catches up; nothing in the
+  configuration is known to be wrong, and nothing is verified either.
 - **The release pipeline no longer fires on every push.** It queued a full
   iOS+Android build behind a documentation change; it now runs on `v*` tags and
   manual dispatch, and cancels in progress for anything that is not a tag.
