@@ -29,6 +29,9 @@ export interface ThemeColors {
   onTile: string;
   keyBackground: string;
   keyText: string;
+  /** For a surface that deliberately inverts the appearance, such as a toast. */
+  inverseSurface: string;
+  onInverseSurface: string;
   headerBackground: string;
   statusBarStyle: 'light' | 'dark';
 }
@@ -90,6 +93,8 @@ export const useTheme = (): ThemeColors => {
     onTile: '#FFFFFF',
     keyBackground: isDark ? '#232D3B' : '#DFE1E4',
     keyText: isDark ? '#F5F7FA' : '#14181F',
+    inverseSurface: isDark ? '#F5F7FA' : '#14181F',
+    onInverseSurface: isDark ? '#14181F' : '#FFFFFF',
     headerBackground: isDark ? '#0B0F16' : '#F7F7F5',
     statusBarStyle: isDark ? 'light' : 'dark',
   };

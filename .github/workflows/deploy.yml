@@ -69,6 +69,9 @@ jobs:
       - name: i18n Completeness
         run: node scripts/check-i18n.mjs
 
+      - name: UI Rules
+        run: node scripts/check-ui-rules.mjs
+
       - name: Generated Data Is Up To Date
         run: |
           node scripts/build-answers.mjs

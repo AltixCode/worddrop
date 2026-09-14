@@ -17,7 +17,13 @@
     "build:prod:ios": "eas build --platform ios --profile production",
     "build:prod:android": "eas build --platform android --profile production",
     "backend:dev": "cd backend && wrangler dev",
-    "backend:deploy": "cd backend && wrangler deploy"
+    "backend:deploy": "cd backend && wrangler deploy",
+    "verify": "bash scripts/verify-all.sh",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "check:ui": "node scripts/check-ui-rules.mjs",
+    "data:answers": "node scripts/build-answers.mjs",
+    "data:dictionary": "node scripts/build-dictionary.mjs",
+    "schedule": "node scripts/preview-schedule.mjs"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",

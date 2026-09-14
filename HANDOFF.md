@@ -26,6 +26,8 @@ service account has been configured. Everything unverified below is recorded as
 | Worker types | `cd backend && npm run typecheck` | **PASS** |
 | Worker/client parity | `cd backend && npm test` | **PASS** — 3 tests |
 | Icon assets | `node scripts/make-icons.mjs` | **PASS** — 6 PNGs generated and visually reviewed |
+| UI rules | `node scripts/check-ui-rules.mjs` | **PASS** — 16 files, no colour literal, no untranslated string, no NativeWind no-op |
+| Everything above, in one run | `npm run verify` | **PASS** |
 
 ## What was NOT run — `UNKNOWN`
 
@@ -62,6 +64,10 @@ Delivery playbook §15.4 gates 3–6, in full:
   legal route, and the staged `slideforge` entry there is missing the required
   `networkUse` and `processedLocally` fields, so the file does not compile yet.
   That error is pre-existing and needs SlideForge'struthful copy, not a guess.
+- **Service runbook written.** `docs/setup-services.md` carries the exact
+  sequence for Cloudflare/KV, RevenueCat, AdMob, App Store Connect, Play and the
+  legal pages, with what to put back into the repo after each. Nothing in it has
+  been executed.
 - **Store listing copy written.** `worddrop` added to
   `Dev/scripts/store-metadata.json` with English plus `de`, `fr`, `es` and `it`,
   and `node scripts/check-store-metadata.mjs` reports every field within limits.

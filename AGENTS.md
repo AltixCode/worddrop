@@ -57,7 +57,16 @@ Free with ads, removed by one lifetime non-consumable (entitlement `pro`).
 ## Before committing
 
 ```bash
-npm run typecheck && npm test && node scripts/check-i18n.mjs
-npx expo export --platform ios && npx expo export --platform android
-cd backend && npm run typecheck && npm test
+npm run verify     # typecheck, tests, i18n, UI rules, data drift, both exports, worker
+```
+
+`npm run verify` is gates 1–2 of the delivery playbook and nothing more. It
+passes on an app that dies before its first frame; only a launch and a real
+run-through of the game prove anything about the product.
+
+Useful alongside it:
+
+```bash
+npm run schedule              # which answer lands on which day
+npm run schedule -- --all     # the full review sheet, for the content pass
 ```

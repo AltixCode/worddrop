@@ -29,7 +29,7 @@ export const Toast: React.FC<Props> = ({ message, onDismiss }) => {
         position: 'absolute',
         top: 8,
         alignSelf: 'center',
-        backgroundColor: theme.isDark ? '#F5F7FA' : '#14181F',
+        backgroundColor: theme.inverseSurface,
         paddingHorizontal: 16,
         paddingVertical: 10,
         borderRadius: 10,
@@ -38,7 +38,7 @@ export const Toast: React.FC<Props> = ({ message, onDismiss }) => {
     >
       <Text
         style={{
-          color: theme.isDark ? '#14181F' : '#FFFFFF',
+          color: theme.onInverseSurface,
           fontWeight: '700',
           fontSize: 14,
           textAlign: 'center',
