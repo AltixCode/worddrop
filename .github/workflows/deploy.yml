@@ -87,6 +87,9 @@ jobs:
   build-ios:
     needs: [verify]
     name: iOS Build & Package
+    env:
+      EXPO_PUBLIC_RC_IOS_KEY: ${{ vars.EXPO_PUBLIC_RC_IOS_KEY }}
+      EXPO_PUBLIC_RC_ANDROID_KEY: ${{ vars.EXPO_PUBLIC_RC_ANDROID_KEY }}
     if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'ios' }}
     runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.ios_runner == 'github-hosted' && 'macos-14' || fromJSON('["self-hosted", "macOS", "ARM64"]') }}
     outputs:
@@ -143,6 +146,18 @@ jobs:
             fs.writeFileSync("app.json", JSON.stringify(app, null, 2));
             console.log("Updated app.json to version", app.expo.version, "build", app.expo.ios.buildNumber);
           '
+
+      - name: Check Purchase Keys
+        run: |
+          if [ -z "${EXPO_PUBLIC_RC_IOS_KEY}" ] || [ -z "${EXPO_PUBLIC_RC_ANDROID_KEY}" ]; then
+            if [ "${{ vars.ENABLE_STORE_UPLOADS }}" = "true" ]; then
+              echo "::error::RevenueCat SDK keys are missing; a published build would ship a paywall that cannot sell."
+              exit 1
+            fi
+            echo "::warning::RevenueCat SDK keys are missing. The paywall will report the store as unreachable in this build."
+          else
+            echo "RevenueCat keys present."
+          fi
 
       - name: Expo Prebuild iOS
         run: npx expo prebuild --platform ios --clean --no-install
@@ -273,6 +288,9 @@ jobs:
   build-android:
     name: Android Build & Package
     needs: [verify]
+    env:
+      EXPO_PUBLIC_RC_IOS_KEY: ${{ vars.EXPO_PUBLIC_RC_IOS_KEY }}
+      EXPO_PUBLIC_RC_ANDROID_KEY: ${{ vars.EXPO_PUBLIC_RC_ANDROID_KEY }}
     if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'android' }}
     runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'github-hosted' && 'ubuntu-24.04' || fromJSON('["self-hosted", "linux", "x64"]') }}
     outputs:
@@ -329,6 +347,18 @@ jobs:
             fs.writeFileSync("app.json", JSON.stringify(app, null, 2));
             console.log("Updated app.json to version", app.expo.version, "build", app.expo.android.versionCode);
           '
+
+      - name: Check Purchase Keys
+        run: |
+          if [ -z "${EXPO_PUBLIC_RC_IOS_KEY}" ] || [ -z "${EXPO_PUBLIC_RC_ANDROID_KEY}" ]; then
+            if [ "${{ vars.ENABLE_STORE_UPLOADS }}" = "true" ]; then
+              echo "::error::RevenueCat SDK keys are missing; a published build would ship a paywall that cannot sell."
+              exit 1
+            fi
+            echo "::warning::RevenueCat SDK keys are missing. The paywall will report the store as unreachable in this build."
+          else
+            echo "RevenueCat keys present."
+          fi
 
       - name: Setup Java 17
         uses: actions/setup-java@v4

@@ -46,21 +46,48 @@ morning rather than the next launch.
 
 ---
 
-## 2. RevenueCat — the lifetime unlock
+## 2. RevenueCat — the lifetime unlock — **DONE, except store credentials**
 
-The portfolio's `rc` CLI is already configured (`~/.zshrc`). WordDrop needs its
-**own project**, not HushTunnel's:
+Created 2026-09-14 with the `rc` CLI, in its own project (not HushTunnel's):
 
-1. Create the project and the two apps (iOS + Android) in the RevenueCat
-   dashboard, or with `rc`. Record the project id here when it exists.
-2. Entitlement: identifier **`pro`** — the app checks this string and nothing else.
-3. Products: one **non-consumable** on the App Store and one **one-time product**
-   on Play. Suggested ids: `worddrop_lifetime` on both.
-   > App Store Connect consumes a product id permanently once registered, even
-   > if deleted. Pick the id once and do not reuse a deleted one.
-4. Offering `default`, package type **lifetime**, with both products attached.
-5. Copy the two public SDK keys into the build environment:
-   `EXPO_PUBLIC_RC_IOS_KEY`, `EXPO_PUBLIC_RC_ANDROID_KEY`.
+| Thing | Id |
+| --- | --- |
+| Project | `proje05b0359` (WordDrop) |
+| iOS app | `appf5a028a41e` — bundle `com.altixcode.worddrop` |
+| Android app | `app4622743f5b` — package `com.altixcode.worddrop` |
+| Entitlement | `entlb7b44b4c9b`, lookup key **`pro`** — the string the app checks |
+| Products | `prod6f040e12df` (App Store, non-consumable) · `prod8f69b0d480` (Play, one-time), both store id **`worddrop_lifetime`** |
+| Offering | `ofrngc09e9ed06f`, lookup key `default`, current |
+| Package | `pkged6b8d873d6`, lookup key `$rc_lifetime`, both products attached |
+
+`rc offerings verify ofrngc09e9ed06f --project-id proje05b0359` confirms the
+chain. The public SDK keys are in the repository's Actions **variables** and in
+a local, git-ignored `.env`:
+
+```
+EXPO_PUBLIC_RC_IOS_KEY=appl_…      EXPO_PUBLIC_RC_ANDROID_KEY=goog_…
+```
+
+> App Store Connect consumes a product id permanently once registered, even if
+> deleted. `worddrop_lifetime` is now the id; do not reuse it for anything else.
+
+### What is still missing
+
+Both remaining steps need an interactive sign-in, so they cannot be scripted here:
+
+```bash
+rc apps apple setup appf5a028a41e     # Apple Account + 2FA
+rc setup google                        # Google sign-in in a browser
+```
+
+The Apple one also **creates the App Store Connect app record** when the bundle
+id has none — which is the only route to that record, because Apple's API cannot
+create apps (see §4). Until these run, RevenueCat cannot validate a receipt:
+`app_store_connect_api_key_configured` is `false` on the iOS app.
+
+Then create the actual store products (`worddrop_lifetime`) in App Store Connect
+and Play Console, and price them. Suggested: the portfolio's usual $4.99–$7.99
+one-time band.
 
 Verification, before submission: purchase, restore, cancel and offline paths,
 against a StoreKit configuration and the Play internal test track. The paywall
@@ -92,10 +119,19 @@ otherwise; keep it that way.
 
 ---
 
-## 4. App Store Connect
+## 4. App Store Connect — **bundle id registered**
 
-An app record can be created through the API with the team key in
-`~/Certificates` (`asccli`). It needs: bundle id `com.altixcode.worddrop`,
+The bundle identifier `com.altixcode.worddrop` is registered in the Developer
+Portal as **`23R989Y7B7`** (`asccli bundle-ids list`).
+
+**The app record itself cannot be created by API.** `asccli apps` offers only
+`list` and `update`, because Apple's App Store Connect API has no app-creation
+endpoint — the portfolio's existing six records were made by hand. Create it
+either in the App Store Connect UI, or by running `rc apps apple setup
+appf5a028a41e`, which offers to create it as part of the Apple credential flow
+(§2) and is the faster path since that credential is needed anyway.
+
+The record needs: bundle id `com.altixcode.worddrop`,
 primary category Games → Word, age rating 4+, and the privacy nutrition label
 filled in exactly as `docs/store-listing.md` describes — RevenueCat **and**
 AdMob both disclosed.

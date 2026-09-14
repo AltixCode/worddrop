@@ -53,6 +53,29 @@ Delivery playbook §15.4 gates 3–6, in full:
 
 ## Done outside this repository
 
+- **RevenueCat provisioned** (2026-09-14, via the `rc` CLI): project
+  `proje05b0359`, iOS app `appf5a028a41e`, Android app `app4622743f5b`,
+  entitlement `pro` (`entlb7b44b4c9b`), one non-consumable/one-time product pair
+  with store id `worddrop_lifetime`, offering `default` (`ofrngc09e9ed06f`) and a
+  `$rc_lifetime` package with both products attached. `rc offerings verify`
+  passes. The two public SDK keys are set as repository Actions variables and in
+  a git-ignored local `.env`, and the release workflow now passes them into both
+  build jobs — with a step that warns while store uploads are off and fails once
+  they are on, because a published build without them ships a paywall that
+  cannot sell.
+  **Still missing**: the Apple and Google store credentials on the RevenueCat
+  apps. Both need an interactive sign-in (`rc apps apple setup appf5a028a41e`,
+  `rc setup google`), so neither could be scripted here. Until then RevenueCat
+  cannot validate a receipt.
+- **Apple bundle identifier registered**: `com.altixcode.worddrop` →
+  `23R989Y7B7`.
+  **The App Store Connect app record does not exist and cannot be created by
+  API** — `asccli apps` exposes only `list` and `update`, because Apple has no
+  app-creation endpoint. The AGENTS note that apps "can be created and driven by
+  API" is wrong on the creation half. The quickest route is
+  `rc apps apple setup appf5a028a41e`, which offers to create the record as part
+  of the credential flow that is needed anyway.
+
 - **Legal profile written.** `worddrop` added to `APP_LEGAL_PROFILES` in
   `HushTunnel-Billing-Dashboard/lib/legal/altixcode-apps.ts`, and the legal page
   template extended to handle an ad-supported app: the boilerplate there claimed
@@ -78,16 +101,18 @@ Delivery playbook §15.4 gates 3–6, in full:
 1. Create the KV namespace, fill `backend/wrangler.toml`, deploy the Worker, set
    `extra.puzzleApiUrl`, and confirm `/health` returns 200 and `/puzzle/today`
    returns a payload whose decoded answer matches the local fallback.
-2. RevenueCat: create the app, the `pro` entitlement and a lifetime
-   non-consumable on both stores; set `EXPO_PUBLIC_RC_IOS_KEY` and
-   `EXPO_PUBLIC_RC_ANDROID_KEY` in the build environment.
+2. RevenueCat: catalogue and keys are done (above). What remains is
+   `rc apps apple setup appf5a028a41e` and `rc setup google` for the store
+   credentials, then creating and pricing the `worddrop_lifetime` product in
+   App Store Connect and Play Console.
 3. AdMob: create the app on both platforms and four ad units; replace the test
    app ids in `app.json` and fill `extra.admob`.
 4. Legal pages: the `worddrop` entry is written (see above) but is **not
    deployed**. Fix the unrelated `slideforge` compile error, commit, deploy the
    dashboard, then confirm both URLs return 200.
-5. Play Console: create the application record by hand (the API cannot), then
-   grant the service account access.
+5. App Store Connect: create the app record (API cannot; see above). Play
+   Console: create the application record by hand (the API cannot), then grant
+   the service account access.
 6. Run gates 3–6 on both a simulator and an emulator; capture store screenshots
    from those runs.
 7. Content review of all 547 answers and clues by a human before launch.
