@@ -80,8 +80,10 @@ Delivery playbook §15.4 gates 3–6, in full:
   cannot sell.
   **Still missing**: the Apple and Google store credentials on the RevenueCat
   apps. Both need an interactive sign-in (`rc apps apple setup appf5a028a41e`,
-  `rc setup google`), so neither could be scripted here. Until then RevenueCat
-  cannot validate a receipt.
+  `rc setup google`), so neither could be scripted here, and the v2 API is not a
+  way around it: posting the App Store Connect key to the app endpoint returns
+  200 and stores nothing — `app_store_connect_api_key_configured` reads `false`
+  afterwards. Until this is done RevenueCat cannot validate a receipt.
 - **StoreKit test configuration exported** to `storekit/WordDrop.storekit` from
   the RevenueCat catalogue, so the purchase, restore, cancel and offline paths
   can be driven on a simulator before any store product exists. Its price and
@@ -91,14 +93,22 @@ Delivery playbook §15.4 gates 3–6, in full:
   com.altixcode.worddrop` returns `404 Package not found`, not `403` — so the
   service account's access is fine and the application record simply has to be
   created by hand in the Play Console first.
-- **Apple bundle identifier registered**: `com.altixcode.worddrop` →
-  `23R989Y7B7`.
-  **The App Store Connect app record does not exist and cannot be created by
-  API** — `asccli apps` exposes only `list` and `update`, because Apple has no
-  app-creation endpoint. The AGENTS note that apps "can be created and driven by
-  API" is wrong on the creation half. The quickest route is
-  `rc apps apple setup appf5a028a41e`, which offers to create the record as part
-  of the credential flow that is needed anyway.
+- **App Store Connect record created and filled in** (2026-09-14): app
+  **6811885940** (`WordDrop: Daily Word Game`, SKU `worddrop-ios`), bundle id
+  `com.altixcode.worddrop` (`23R989Y7B7`), version 1.0, category Games → Word.
+  The public API could not do it — Apple has no app-creation endpoint, and
+  `asccli apps` only lists and updates; it was created through `asccli iris apps
+  create`, which uses App Store Connect's private API and the browser session
+  already on this machine.
+  Also by API: the `worddrop_lifetime` non-consumable (**6811885891**) priced at
+  **$5.99** USA base and auto-equalised worldwide, with localizations and a
+  review note; listing copy for en-US/de-DE/fr-FR/es-ES/it; privacy policy and
+  support URLs on every locale; and an age-rating declaration that answers
+  everything `NONE`/false **except advertising, which is true**.
+  `asc versions check-readiness` now shows exactly two things outstanding: a
+  **build** and **screenshots**. Both need the app running on hardware. The IAP
+  sits at `MISSING_METADATA` for the same reason — it needs a review screenshot
+  of the real paywall, and a fabricated one is not an option.
 
 - **Legal profile written.** `worddrop` added to `APP_LEGAL_PROFILES` in
   `HushTunnel-Billing-Dashboard/lib/legal/altixcode-apps.ts`, and the legal page
@@ -123,18 +133,17 @@ Delivery playbook §15.4 gates 3–6, in full:
 ## Blockers before submission
 
 1. ~~Deploy the Worker.~~ **Done and verified** (see above).
-2. RevenueCat: catalogue and keys are done (above). What remains is
-   `rc apps apple setup appf5a028a41e` and `rc setup google` for the store
-   credentials, then creating and pricing the `worddrop_lifetime` product in
-   App Store Connect and Play Console.
+2. RevenueCat: catalogue, keys and the App Store product are done (above). What
+   remains is `rc apps apple setup appf5a028a41e` and `rc setup google` for the
+   store credentials, and the Play Console product once that record exists.
 3. AdMob: create the app on both platforms and four ad units; replace the test
    app ids in `app.json` and fill `extra.admob`.
 4. Legal pages: the `worddrop` entry is written (see above) but is **not
    deployed**. Fix the unrelated `slideforge` compile error, commit, deploy the
    dashboard, then confirm both URLs return 200.
-5. App Store Connect: create the app record (API cannot; see above). Play
-   Console: create the application record by hand (the API cannot), then grant
-   the service account access.
+5. Play Console: create the application record by hand (the API cannot — `gplay
+   edits create` returns `404 Package not found`), then grant the service
+   account access and create the `worddrop_lifetime` product there.
 6. Run gates 3–6 on both a simulator and an emulator; capture store screenshots
    from those runs.
 7. Content review of all 547 answers and clues by a human before launch.

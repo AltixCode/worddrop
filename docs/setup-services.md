@@ -81,21 +81,22 @@ EXPO_PUBLIC_RC_IOS_KEY=appl_…      EXPO_PUBLIC_RC_ANDROID_KEY=goog_…
 
 ### What is still missing
 
-Both remaining steps need an interactive sign-in, so they cannot be scripted here:
+The store credentials on the RevenueCat apps. Both routes need an interactive
+sign-in that cannot be scripted:
 
 ```bash
 rc apps apple setup appf5a028a41e     # Apple Account + 2FA
-rc setup google                        # Google sign-in in a browser
+rc setup google                       # Google sign-in in a browser
 ```
 
-The Apple one also **creates the App Store Connect app record** when the bundle
-id has none — which is the only route to that record, because Apple's API cannot
-create apps (see §4). Until these run, RevenueCat cannot validate a receipt:
-`app_store_connect_api_key_configured` is `false` on the iOS app.
+The v2 API is **not** a way around it. `POST /projects/…/apps/…` with an
+`app_store.app_store_connect_api_key` body returns 200 and changes nothing:
+`app_store_connect_api_key_configured` stays `false` on a fresh read. Uploading
+the key is a dashboard action (or the Apple-ID flow above); the 200 is not
+evidence that it worked, and re-reading is what shows it did not.
 
-Then create the actual store products (`worddrop_lifetime`) in App Store Connect
-and Play Console, and price them. Suggested: the portfolio's usual $4.99–$7.99
-one-time band.
+The App Store product itself already exists and is priced — see §4 — so once the
+credentials are in place RevenueCat has something to validate against.
 
 Verification, before submission: purchase, restore, cancel and offline paths,
 against a StoreKit configuration and the Play internal test track. The paywall
@@ -127,28 +128,42 @@ otherwise; keep it that way.
 
 ---
 
-## 4. App Store Connect — **bundle id registered**
+## 4. App Store Connect — **record created, text metadata done**
 
-The bundle identifier `com.altixcode.worddrop` is registered in the Developer
-Portal as **`23R989Y7B7`** (`asccli bundle-ids list`).
+Created 2026-09-14. The app record could not be made with the App Store Connect
+API — `asccli apps` offers only `list` and `update`, because Apple exposes no
+app-creation endpoint. It was created through `asccli iris apps create`, which
+drives App Store Connect's own private API using the browser session already on
+this machine (`asc iris status` shows the cookies).
 
-**The app record itself cannot be created by API.** `asccli apps` offers only
-`list` and `update`, because Apple's App Store Connect API has no app-creation
-endpoint — the portfolio's existing six records were made by hand. Create it
-either in the App Store Connect UI, or by running `rc apps apple setup
-appf5a028a41e`, which offers to create it as part of the Apple credential flow
-(§2) and is the faster path since that credential is needed anyway.
+| Thing | Value |
+| --- | --- |
+| App id | **6811885940** — `WordDrop: Daily Word Game`, SKU `worddrop-ios` |
+| Bundle id | `com.altixcode.worddrop` (Developer Portal id `23R989Y7B7`) |
+| App info id | `3a181c0e-1fdd-44fa-9656-a8e05a042562` |
+| Version | `1.0` — `ec2393be-b809-4ad5-91b3-d0123266069a` |
+| Category | Games → Word, secondary subcategory Puzzle |
+| In-app purchase | **6811885891**, `worddrop_lifetime`, non-consumable, **$5.99** base (USA), auto-equalised worldwide |
 
-The record needs: bundle id `com.altixcode.worddrop`,
-primary category Games → Word, age rating 4+, and the privacy nutrition label
-filled in exactly as `docs/store-listing.md` describes — RevenueCat **and**
-AdMob both disclosed.
+Done by API:
 
-Listing copy is already written in `Dev/scripts/store-metadata.json` under
-`worddrop` (English plus `de`, `fr`, `es`, `it`) and passes
-`node scripts/check-store-metadata.mjs`. Once the record exists, put its id in
-that entry's `ascAppId` and push the copy with
-`node scripts/upload-store-metadata.mjs worddrop --dry` first.
+- Listing copy for `en-US`, `de-DE`, `fr-FR`, `es-ES` and `it`, pushed with
+  `node scripts/upload-store-metadata.mjs worddrop` from the `Dev` root.
+- Privacy policy URL on every locale
+  (`https://www.hushtunnel.com/legal/worddrop-privacy` — **still 404 until the
+  dashboard is deployed**, §6).
+- Support URL on every locale (`https://www.altixcode.com/contact`, verified 200).
+- IAP localizations in the same five locales, plus a review note explaining how
+  to reach and test the purchase.
+- Age rating declared truthfully: everything `NONE`/false **except
+  `isAdvertising: true`**, because the app does show ads.
+
+`asc versions check-readiness --version-id ec2393be-b809-4ad5-91b3-d0123266069a`
+now reports every locale passing on description, keywords and support URL, and
+exactly two things outstanding — **a build** and **screenshots**. Both need the
+app to run on hardware; neither can be honestly produced before that. The IAP
+stays `MISSING_METADATA` for the same reason: it needs a review screenshot of
+the real paywall.
 
 ## 5. Google Play
 
