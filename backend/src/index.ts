@@ -94,12 +94,22 @@ export default {
     const date = match[1] === 'today' ? today : match[1];
     if (!DATE_RE.test(date)) return json({ error: 'bad_date' }, 400);
 
-    // Nothing may read forward. Without this the whole future list is one
-    // request away and every daily puzzle is spoiled in advance.
-    if (date > today) return json({ error: 'not_yet_published' }, 403);
+    // A date can be well-formed and still impossible — 2026-02-30 matches the
+    // pattern above. Parsing decides, and a parse failure is the client's
+    // mistake (400), not ours (a 500 with a stack trace, which is what an
+    // unguarded call produced).
+    let requestedIndex: number;
+    try {
+      requestedIndex = dayIndexForDate(date);
+    } catch {
+      return json({ error: 'bad_date' }, 400);
+    }
 
     const todayIndex = dayIndexForDate(today);
-    const requestedIndex = dayIndexForDate(date);
+
+    // Nothing may read forward. Without this the whole future list is one
+    // request away and every daily puzzle is spoiled in advance.
+    if (requestedIndex > todayIndex) return json({ error: 'not_yet_published' }, 403);
     if (requestedIndex < 0) return json({ error: 'before_launch' }, 404);
     if (todayIndex - requestedIndex > Number(env.MAX_PAST_DAYS ?? 3650)) {
       return json({ error: 'too_old' }, 404);

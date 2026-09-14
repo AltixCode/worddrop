@@ -47,11 +47,26 @@ Delivery playbook §15.4 gates 3–6, in full:
 - **Ad serving and the UMP consent form** — `UNKNOWN`. The build currently
   carries Google's public **test** app ids and falls back to test ad units.
 - **Android RTL and iOS RTL screenshots** — `UNKNOWN`.
-- **Worker deployment** — `UNKNOWN`. `backend/wrangler.toml` still holds
-  `REPLACE_WITH_KV_NAMESPACE_ID`, and `extra.puzzleApiUrl` is empty, so the app
-  currently plays entirely from its bundled list.
+- **The app talking to the Worker on a device** — `UNKNOWN`. The endpoint itself
+  is verified from this machine, but no build has yet fetched from it, so the
+  client's fetch, cache and fallback path has not been exercised against the
+  real URL.
 
 ## Done outside this repository
+
+- **Puzzle Worker deployed and verified** (2026-09-14):
+  `https://worddrop-puzzle.worddrop-puzzle-worker.workers.dev`, KV namespace
+  `5a352f43e31d4a1898b7f92ff76e40a8`, cron `0 0 * * *`. `app.json` →
+  `extra.puzzleApiUrl` points at it, the repository has the Cloudflare secrets
+  and `ENABLE_WORKER_DEPLOY=true`.
+  Verified against the live URL: `/health` answers, `/puzzle/2026-09-14` serves
+  ROGUE (#257) and `/puzzle/2026-03-01` serves HOOK (#60) — **both identical to
+  what the app computes offline for those dates**, which is the property the
+  whole fallback design rests on. Future dates 403, pre-launch 404, impossible
+  dates 400, and both served days are in KV.
+  One real defect was found and fixed while probing: a well-formed but
+  impossible date (`2026-02-30`) threw out of the date parser and returned a 500
+  with a stack trace. It now returns `400 bad_date`.
 
 - **RevenueCat provisioned** (2026-09-14, via the `rc` CLI): project
   `proje05b0359`, iOS app `appf5a028a41e`, Android app `app4622743f5b`,
@@ -107,9 +122,7 @@ Delivery playbook §15.4 gates 3–6, in full:
 
 ## Blockers before submission
 
-1. Create the KV namespace, fill `backend/wrangler.toml`, deploy the Worker, set
-   `extra.puzzleApiUrl`, and confirm `/health` returns 200 and `/puzzle/today`
-   returns a payload whose decoded answer matches the local fallback.
+1. ~~Deploy the Worker.~~ **Done and verified** (see above).
 2. RevenueCat: catalogue and keys are done (above). What remains is
    `rc apps apple setup appf5a028a41e` and `rc setup google` for the store
    credentials, then creating and pricing the `worddrop_lifetime` product in

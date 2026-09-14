@@ -11,8 +11,8 @@ crons = ["0 0 * * *"]
 [[kv_namespaces]]
 binding = "PUZZLES"
 # Created with: wrangler kv namespace create PUZZLES
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_KV_PREVIEW_ID"
+id = "5a352f43e31d4a1898b7f92ff76e40a8"
+preview_id = "f556c08ee9ac475d85fab105b06a23e5"
 
 [vars]
 # Days either side of today that may be fetched. The archive reads backwards

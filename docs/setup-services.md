@@ -7,44 +7,52 @@ GitHub Actions secrets.
 
 ---
 
-## 1. Cloudflare — the puzzle Worker
+## 1. Cloudflare — the puzzle Worker — **DEPLOYED**
 
-Needed for "everyone gets the same word". The app already plays without it, from
-the bundled list, so this is not a launch blocker — but without it a player who
-reinstalls mid-list can drift from everyone else if the word list is ever
-reordered.
+Live at **`https://worddrop-puzzle.worddrop-puzzle-worker.workers.dev`**, which
+is what `app.json` → `extra.puzzleApiUrl` points at.
+
+| Thing | Value |
+| --- | --- |
+| Worker | `worddrop-puzzle`, cron `0 0 * * *` |
+| KV namespace | `5a352f43e31d4a1898b7f92ff76e40a8` (preview `f556c08ee9ac475d85fab105b06a23e5`) |
+| Credentials | `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` exported from `~/.zshrc`, and set as repository secrets |
+| CI | `ENABLE_WORKER_DEPLOY=true`, so `worker-deploy.yml` deploys on a push that touches `backend/` |
+
+Verified live on 2026-09-14:
+
+| Request | Result |
+| --- | --- |
+| `/health` | `{"ok":true,"answers":547,...}` |
+| `/puzzle/2026-09-14` | ROGUE (#257) — **identical to the app's offline fallback** for that date |
+| `/puzzle/2026-03-01` | HOOK (#60) — likewise |
+| `/puzzle/today` | byte-identical to the dated request |
+| `/puzzle/2026-09-15` (future) | `403 not_yet_published` |
+| `/puzzle/2025-12-31` (pre-launch) | `404 before_launch` |
+| `/puzzle/2026-02-30`, `/puzzle/2026-13-01` | `400 bad_date` |
+| KV after serving | `puzzle:2026-03-01`, `puzzle:2026-09-14` stored |
+
+Re-running the checks:
 
 ```bash
 cd backend
-npx wrangler login                       # or set CLOUDFLARE_API_TOKEN
-npx wrangler kv namespace create PUZZLES
-npx wrangler kv namespace create PUZZLES --preview
-```
-
-Put the two ids into `backend/wrangler.toml` (`id`, `preview_id`), then:
-
-```bash
 npx wrangler deploy
-curl -s https://worddrop-puzzle.<subdomain>.workers.dev/health
-curl -s https://worddrop-puzzle.<subdomain>.workers.dev/puzzle/today
+npx wrangler kv key list --namespace-id 5a352f43e31d4a1898b7f92ff76e40a8 --remote
 ```
 
-`/health` returns the answer count and the UTC date. `/puzzle/today` returns the
-published record; its `a` field is the obfuscated answer — decode it with
-`node -e` against `src/game/puzzleCodec.ts` and check it matches
-`node scripts/preview-schedule.mjs <date> 1`.
+> **`--remote` is not optional.** Wrangler 4's KV commands read and write the
+> *local* simulator by default, so without it `kv key get` reports
+> `Value not found` for a key that is sitting in production — which reads as a
+> broken Worker rather than a misdirected query.
 
-Then set `extra.puzzleApiUrl` in `app.json` to that base URL, and in the
-repository settings add the variable `ENABLE_WORKER_DEPLOY=true` plus the
-secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` so
-`.github/workflows/worker-deploy.yml` stops skipping.
+Costs nothing at this scale: the free tier allows 100,000 requests a day and the
+app makes one per player per day, cached thereafter; the cron writes a single KV
+key per day against a 1,000/day allowance.
 
-**The cron matters more than the endpoint.** Publication is idempotent and the
-endpoint publishes on demand, so a missed cron run is not a failure — but leave
-it in place, because it keeps KV warm and makes a broken deploy visible the next
-morning rather than the next launch.
-
----
+Optional later: put it behind a custom domain (`puzzle.altixcode.com`) so the
+endpoint is not tied to the generated `workers.dev` subdomain. Changing it means
+changing `extra.puzzleApiUrl`, which needs an app release — the fallback keeps
+old versions playable either way.
 
 ## 2. RevenueCat — the lifetime unlock — **DONE, except store credentials**
 

@@ -48,7 +48,9 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": ["com.google.android.gms.permission.AD_ID"]
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -97,7 +99,7 @@
       "./plugins/withAndroidRtl"
     ],
     "extra": {
-      "puzzleApiUrl": "",
+      "puzzleApiUrl": "https://worddrop-puzzle.worddrop-puzzle-worker.workers.dev",
       "admob": {
         "iosBanner": "",
         "androidBanner": "",
