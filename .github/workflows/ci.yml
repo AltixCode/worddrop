@@ -6,11 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       runner:
-        description: 'Runner (self-hosted first; hosted is backup)'
+        description: 'Runner. Hosted is the default here: the self-hosted Linux runner is not registered to this repository.'
         required: true
-        default: 'self-hosted'
+        default: 'github-hosted'
         type: choice
-        options: [self-hosted, github-hosted]
+        options: [github-hosted, self-hosted]
 
 concurrency:
   group: ci-${{ github.repository }}-${{ github.ref }}
@@ -19,7 +19,7 @@ concurrency:
 jobs:
   validate:
     name: Typecheck, Tests & Bundle Verification
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'github-hosted' && 'ubuntu-24.04' || fromJSON('["self-hosted", "linux", "x64"]') }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'self-hosted' && fromJSON('["self-hosted", "linux", "x64"]') || 'ubuntu-24.04' }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
 
   worker:
     name: Puzzle Worker
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'github-hosted' && 'ubuntu-24.04' || fromJSON('["self-hosted", "linux", "x64"]') }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'self-hosted' && fromJSON('["self-hosted", "linux", "x64"]') || 'ubuntu-24.04' }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

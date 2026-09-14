@@ -15,7 +15,9 @@ concurrency:
 jobs:
   deploy:
     name: wrangler deploy
-    runs-on: [self-hosted, linux, x64]
+    # Hosted on purpose: this job is npm + wrangler and needs nothing from the
+    # self-hosted machine, which is not registered to this repository anyway.
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

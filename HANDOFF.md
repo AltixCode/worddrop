@@ -146,8 +146,21 @@ Delivery playbook §15.4 gates 3–6, in full:
   AdMob and the UMP consent flow are present. Every privacy claim in the UI,
   the store listing and the legal pages has been written to match that reality —
   do not re-introduce the portfolio's "no third-party SDKs" copy here.
-- The self-hosted GitHub Actions runner was recorded as stopped on 2026-09-13
-  after filling its disk, so no workflow has run against this repository yet.
+- **No runner is registered to this repository.** `gh api
+  repos/atasmohammadi/worddrop/actions/runners` returns an empty list: the
+  portfolio's self-hosted runners belong to the AltixCode org, and this repo sits
+  under the personal account (and the machine itself was stopped on 2026-09-13
+  after filling its disk). Every self-hosted job here therefore queued forever
+  rather than failing, which is why the first pushes show `pending` runs.
+  Changed in response: CI and the Worker deploy now run on `ubuntu-24.04`, as do
+  the Linux jobs of the release pipeline, with `self-hosted` still selectable per
+  dispatch. The **iOS build still defaults to the self-hosted Mac mini**, because
+  the signing identity lives there and hosted macOS minutes bill at ten times the
+  rate — so a release build needs either that runner registered to this repo, or
+  a dispatch with `ios_runner: github-hosted`.
+- **The release pipeline no longer fires on every push.** It queued a full
+  iOS+Android build behind a documentation change; it now runs on `v*` tags and
+  manual dispatch, and cancels in progress for anything that is not a tag.
 - The bundle is ~8 MB of Hermes bytecode, of which the guess dictionary is
   ~290 KB of source. If that needs trimming, the dictionary is the first thing
   to cut down (a frequency-filtered list would roughly halve it).

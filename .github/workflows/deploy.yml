@@ -2,8 +2,6 @@ name: Build, Release & Store Submission Pipeline
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
   workflow_dispatch:
@@ -23,17 +21,17 @@ on:
         default: true
         type: boolean
       ios_runner:
-        description: 'iOS runner (self-hosted first; hosted is backup)'
+        description: 'iOS runner. Self-hosted by default: the signing identity lives on the Mac mini, and hosted macOS minutes bill at 10x.'
         required: true
         default: 'self-hosted'
         type: choice
         options: [self-hosted, github-hosted]
       android_runner:
-        description: 'Android runner (self-hosted first; hosted is backup)'
+        description: 'Android/Linux runner. Hosted by default: the self-hosted Linux runner is not registered to this repository.'
         required: true
-        default: 'self-hosted'
+        default: 'github-hosted'
         type: choice
-        options: [self-hosted, github-hosted]
+        options: [github-hosted, self-hosted]
 
 permissions:
   contents: write
@@ -41,12 +39,13 @@ permissions:
 
 concurrency:
   group: release-${{ github.repository }}
-  cancel-in-progress: false
+  # A tag build must never be interrupted; an ad-hoc dispatch may be.
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
 jobs:
   verify:
     name: Typecheck, Tests & Generated Data
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'github-hosted' && 'ubuntu-24.04' || fromJSON('["self-hosted", "linux", "x64"]') }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'self-hosted' && fromJSON('["self-hosted", "linux", "x64"]') || 'ubuntu-24.04' }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -292,7 +291,7 @@ jobs:
       EXPO_PUBLIC_RC_IOS_KEY: ${{ vars.EXPO_PUBLIC_RC_IOS_KEY }}
       EXPO_PUBLIC_RC_ANDROID_KEY: ${{ vars.EXPO_PUBLIC_RC_ANDROID_KEY }}
     if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'android' }}
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'github-hosted' && 'ubuntu-24.04' || fromJSON('["self-hosted", "linux", "x64"]') }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'self-hosted' && fromJSON('["self-hosted", "linux", "x64"]') || 'ubuntu-24.04' }}
     outputs:
       app_name: ${{ steps.version.outputs.app_name }}
       app_version: ${{ steps.version.outputs.app_version }}
@@ -460,7 +459,7 @@ jobs:
     name: Publish GitHub Release
     needs: [build-ios, build-android]
     if: always() && (needs.build-ios.result == 'success' || needs.build-android.result == 'success')
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
