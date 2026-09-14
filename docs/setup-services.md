@@ -79,21 +79,60 @@ EXPO_PUBLIC_RC_IOS_KEY=appl_…      EXPO_PUBLIC_RC_ANDROID_KEY=goog_…
 > App Store Connect consumes a product id permanently once registered, even if
 > deleted. `worddrop_lifetime` is now the id; do not reuse it for anything else.
 
-### What is still missing
+### What is still missing — and what actually blocks a sale
 
-The store credentials on the RevenueCat apps. Both routes need an interactive
-sign-in that cannot be scripted:
+**The In-App Purchase Key is the blocker.** `react-native-purchases` 10 uses
+StoreKit 2, and RevenueCat requires an In-App Purchase Key to record those
+transactions; without it a purchase goes through at Apple and the entitlement
+never lands, which is the worst possible failure for a paid unlock. It is
+generated in App Store Connect under **Users and Access → Integrations →
+In-App Purchase**, downloadable exactly once, and uploaded to the RevenueCat
+app. One key covers every app in the account.
+
+| Credential | Needed for | Can it be set by API? |
+| --- | --- | --- |
+| In-App Purchase Key | **Recording StoreKit 2 purchases — required** | No. Dashboard upload, or `rc apps apple setup` |
+| App-Specific Shared Secret | StoreKit 1 receipt validation | **Yes** — `app_store.shared_secret` (the field validates length) |
+| App Store Connect API key | Product metadata, refund handling | No — accepted by the schema, stored by nothing (below) |
+| Vendor number | Sales-report import | **Yes** — `app_store.app_store_connect_vendor_number` |
+
+**The v2 API cannot upload the App Store Connect key**, and fails at it
+quietly. Verified on 2026-09-14 against
+`POST /projects/proje05b0359/apps/appf5a028a41e`:
+
+- `PATCH` on that path → `405 Method Not Allowed`.
+- `POST` with a top-level `app_store_connect_api_key` object → rejected,
+  `Additional properties are not allowed`.
+- `POST` with `app_store.app_store_connect_api_key` (+ `_key_id`) → **200**, and
+  `app_store_connect_api_key_configured` still reads `false` afterwards. The
+  same for the key as raw PEM, as base64 of the file, and as the PEM body with
+  the armour stripped.
+- No sub-resource exists: `…/apps/…/app_store_connect_api_key`,
+  `/apple_credentials` and `/credentials` all return `resource_missing`.
+
+A 200 from that endpoint means the request was well-formed, not that anything
+was stored. Re-read the app afterwards; that is what shows the truth.
+
+The remaining interactive routes:
 
 ```bash
-rc apps apple setup appf5a028a41e     # Apple Account + 2FA
-rc setup google                       # Google sign-in in a browser
+env -u RC_API_KEY -u REVENUECAT_API_KEY -u REVENUECAT_SECRET_API_KEY \
+  rc apps apple setup appf5a028a41e --project-id proje05b0359   # Apple ID + 2FA
+env -u RC_API_KEY -u REVENUECAT_API_KEY -u REVENUECAT_SECRET_API_KEY \
+  rc setup google --project-id proje05b0359 --package com.altixcode.worddrop
 ```
 
-The v2 API is **not** a way around it. `POST /projects/…/apps/…` with an
-`app_store.app_store_connect_api_key` body returns 200 and changes nothing:
-`app_store_connect_api_key_configured` stays `false` on a fresh read. Uploading
-the key is a dashboard action (or the Apple-ID flow above); the 200 is not
-evidence that it worked, and re-reading is what shows it did not.
+> `RC_API_KEY` in `~/.zshrc` is scoped to the **HushTunnel** project and shadows
+> the profile's OAuth login, so any command against another project fails with
+> `The API key does not belong to the project …`. The profile's active project is
+> also BlockJam (`proj62d4d4fd`), which is why an un-flagged command lands
+> there. Strip the env keys and pass `--project-id`, as above.
+
+> `rc setup google` cannot finish until the **Play Console record exists** — its
+> last step grants the service account package-scoped access to the app, and
+> that 404s otherwise. Create the record first; the run so far enabled the APIs
+> and created the service account, and re-running replaces its key unless
+> `--keep-old-keys` is passed.
 
 The App Store product itself already exists and is priced — see §4 — so once the
 credentials are in place RevenueCat has something to validate against.
