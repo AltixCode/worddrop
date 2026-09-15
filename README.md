@@ -65,4 +65,5 @@ four paths that must be exercised, not just the happy one.
 - `docs/setup-services.md` — Cloudflare, RevenueCat, AdMob and the store records
 - `docs/word-list.md` — how the answer list is curated and topped up
 - `docs/store-listing.md` — store metadata, ASO and the submission checklist
-- `HANDOFF.md` — what has actually been run and what has not
+- **`HANDOFF.md` — start here.** What exists, what is verified, what is left, and
+  which of it needs a human rather than an agent.
