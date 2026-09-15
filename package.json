@@ -24,7 +24,7 @@
     "data:answers": "node scripts/build-answers.mjs",
     "data:dictionary": "node scripts/build-dictionary.mjs",
     "schedule": "node scripts/preview-schedule.mjs",
-    "check:release": "tsx scripts/check-release-config.ts"
+    "check:release": "node scripts/check-paywall-copy.mjs && node scripts/check-locale-scripts.mjs && tsx scripts/check-release-config.ts"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
