@@ -1,6 +1,15 @@
 import { Platform } from 'react-native';
 import Purchases, { PurchasesPackage, LOG_LEVEL } from 'react-native-purchases';
 
+/**
+ * The RevenueCat entitlement one purchase grants: no ads, and the archive open.
+ *
+ * This string must match the entitlement's lookup key in the WordDrop RevenueCat project
+ * (`proje05b0359`) exactly, which is **`pro`** — `rc entitlements list` is the authority. A
+ * mismatch does not fail loudly: the purchase completes at the store, `customerInfo` carries an
+ * entitlement under a different key, `hasPro` finds nothing, and the player pays for an unlock
+ * that never arrives. (`remove_ads` is BlockJam's key, not this project's.)
+ */
 const ENTITLEMENT_ID = 'pro';
 
 /**

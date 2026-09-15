@@ -23,7 +23,8 @@
     "check:ui": "node scripts/check-ui-rules.mjs",
     "data:answers": "node scripts/build-answers.mjs",
     "data:dictionary": "node scripts/build-dictionary.mjs",
-    "schedule": "node scripts/preview-schedule.mjs"
+    "schedule": "node scripts/preview-schedule.mjs",
+    "check:release": "tsx scripts/check-release-config.ts"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -42,7 +43,7 @@
     "nativewind": "^4.2.6",
     "react": "19.2.3",
     "react-native": "0.86.3",
-    "react-native-google-mobile-ads": "^16.5.0",
+    "react-native-google-mobile-ads": "16.3.4",
     "react-native-purchases": "^10.9.1",
     "react-native-reanimated": "4.5.1",
     "react-native-safe-area-context": "~5.7.0",
@@ -62,6 +63,7 @@
     "jest": "^30.5.1",
     "jest-expo": "^57.0.5",
     "react-test-renderer": "^19.3.0",
+    "tsx": "^4.23.13",
     "typescript": "~6.0.3"
   },
   "jest": {
