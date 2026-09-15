@@ -107,7 +107,7 @@ jobs:
     needs: [verify]
     name: iOS Build & Package
     if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'ios' }}
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.ios_runner == 'github-hosted' && 'macos-14' || fromJSON('["self-hosted", "macOS", "ARM64"]') }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.ios_runner == 'github-hosted' && 'macos-14' || fromJSON('["self-hosted", "macOS", "ARM64", "ios-signing"]') }}
     outputs:
       app_name: ${{ steps.version.outputs.app_name }}
       app_version: ${{ steps.version.outputs.app_version }}
