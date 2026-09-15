@@ -5,7 +5,7 @@ but nothing has been launched on a device or an emulator yet, and no store or
 service account has been configured. Everything unverified below is recorded as
 `UNKNOWN`, never as a pass.
 
-- **Date**: 2026-09-14 (local; scaffolded 2026-09-13)
+- **Date**: 2026-09-15 (local; scaffolded 2026-09-13)
 - **Repository**: https://github.com/atasmohammadi/worddrop (private)
 - **Scope of this pass**: full scaffold from
   `02-daily-word-puzzle-implementation-plan.md` — game, backend Worker, ads,
@@ -16,7 +16,7 @@ service account has been configured. Everything unverified below is recorded as
 | Check | Command | Result |
 | --- | --- | --- |
 | Types | `npm run typecheck` | **PASS** — no errors |
-| Unit tests | `npm test` | **PASS** — 9 suites, 89 tests |
+| Unit tests | `npm test` | **PASS** — 10 suites, 94 tests |
 | i18n completeness | `node scripts/check-i18n.mjs` | **PASS** — 14 locales × 114 keys |
 | Generated data | `node scripts/build-answers.mjs` | **PASS** — 547 answers (4:83, 5:189, 6:176, 7:99) |
 | Guess dictionary | `node scripts/build-dictionary.mjs` | **PASS** — 48,501 words (4:4360, 5:8506, 6:15073, 7:20562) |
@@ -51,6 +51,28 @@ Delivery playbook §15.4 gates 3–6, in full:
   is verified from this machine, but no build has yet fetched from it, so the
   client's fetch, cache and fallback path has not been exercised against the
   real URL.
+
+## Review of 2026-09-15 — three defects found and fixed
+
+Another session had left uncommitted work in the tree (UMP `canRequestAds`
+gating, AdMob ids moved to `EXPO_PUBLIC_*` with `app.config.ts` resolving the
+native app ids, and a `check:release` guard). It is committed now, with three
+fixes:
+
+1. **The entitlement id had become `remove_ads`** — BlockJam's key. WordDrop's
+   RevenueCat project defines `pro` and nothing else, so every purchase would
+   have completed at the store and unlocked nothing, with no error anywhere.
+2. **Nothing ever requested App Tracking Transparency**, although the plugin,
+   the Info.plist string, the store listing and the privacy policy all said it
+   did. It is now asked after the UMP form, and a refusal downgrades to
+   non-personalised ads.
+3. **`check:release` read the RevenueCat keys from secrets that do not exist**
+   (they are repository variables), so every store build would have failed at
+   `verify`.
+
+Also declared on the App Store record: export compliance
+(`usesNonExemptEncryption: false`, so the question is answered in the binary)
+and `DOES_NOT_USE_THIRD_PARTY_CONTENT`.
 
 ## Done outside this repository
 

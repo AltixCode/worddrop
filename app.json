@@ -36,6 +36,9 @@
           "el"
         ],
         "CFBundleDevelopmentRegion": "en"
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
