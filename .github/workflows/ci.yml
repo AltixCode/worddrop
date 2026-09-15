@@ -19,7 +19,12 @@ concurrency:
 jobs:
   validate:
     name: Typecheck, Tests & Bundle Verification
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'self-hosted' && fromJSON('["self-hosted", "linux", "x64"]') || 'ubuntu-24.04' }}
+    # macOS rather than the self-hosted Linux runner: the only one carrying
+    # `linux, x64` is the Coolify host, which is permanently busy serving
+    # deployments, so jobs queued behind it indefinitely. Nothing here needs
+    # Linux -- `setup-java` supplies JDK 17 anywhere and `setup-android`
+    # installs the SDK itself.
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'self-hosted' && fromJSON('["self-hosted", "macOS", "ARM64"]') || 'ubuntu-24.04' }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -61,7 +66,7 @@ jobs:
 
   worker:
     name: Puzzle Worker
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'self-hosted' && fromJSON('["self-hosted", "linux", "x64"]') || 'ubuntu-24.04' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.runner == 'self-hosted' && fromJSON('["self-hosted", "macOS", "ARM64"]') || 'ubuntu-24.04' }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

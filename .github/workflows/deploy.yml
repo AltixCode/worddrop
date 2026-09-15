@@ -57,7 +57,12 @@ env:
 jobs:
   verify:
     name: Typecheck, Tests & Generated Data
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'self-hosted' && fromJSON('["self-hosted", "linux", "x64"]') || 'ubuntu-24.04' }}
+    # macOS rather than the self-hosted Linux runner: the only one carrying
+    # `linux, x64` is the Coolify host, which is permanently busy serving
+    # deployments, so jobs queued behind it indefinitely. Nothing here needs
+    # Linux -- `setup-java` supplies JDK 17 anywhere and `setup-android`
+    # installs the SDK itself.
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'self-hosted' && fromJSON('["self-hosted", "macOS", "ARM64"]') || 'ubuntu-24.04' }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -303,7 +308,7 @@ jobs:
     name: Android Build & Package
     needs: [verify]
     if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'android' }}
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'self-hosted' && fromJSON('["self-hosted", "linux", "x64"]') || 'ubuntu-24.04' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'self-hosted' && fromJSON('["self-hosted", "macOS", "ARM64"]') || 'ubuntu-24.04' }}
     outputs:
       app_name: ${{ steps.version.outputs.app_name }}
       app_version: ${{ steps.version.outputs.app_version }}
