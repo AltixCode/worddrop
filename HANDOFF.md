@@ -1,405 +1,250 @@
-# HANDOFF — WordDrop
+# WordDrop — handoff
 
-**Read this first if you are picking the app up.** It is the single source of
-truth for what exists, what is verified, and what is left. Anything not recorded
-here as verified is `UNKNOWN`, never a pass (`docs/agents/14.4`).
+Written 2026-09-15. Everything below was checked against the live consoles and
+the repo on that date, not inferred.
 
-- **Status**: `NOT_READY_FOR_SUBMISSION`
-- **Last updated**: 2026-09-15
-- **Last commit reviewed**: `79e6955`
-- **Repository**: https://github.com/atasmohammadi/worddrop (private, personal account)
+**Where this app stands:** the code is done and verified on both platforms. It
+cannot be submitted yet, and the reasons are mostly outside this repo — AdMob is
+not configured for it, the legal URLs 404, and no build has ever been uploaded
+to either store.
 
 ---
 
-## 1. What the app is
-
-A daily film-themed word puzzle. Every player worldwide gets the same 4–7 letter
-word each day and six guesses, keeps a streak, and can share a spoiler-free
-emoji grid. Free with ads; **one lifetime non-consumable purchase** removes every
-ad and opens the archive of past puzzles. No accounts, no subscription.
+## Identifiers
 
 | | |
-| --- | --- |
-| Stack | Expo SDK 57, RN 0.86, TypeScript strict, Expo Router, Zustand + AsyncStorage |
-| Identifiers | `com.altixcode.worddrop` both stores, scheme `worddrop://` |
-| Payments | RevenueCat, entitlement **`pro`**, product `worddrop_lifetime`, $5.99 |
-| Ads | AdMob — one interstitial/day after the result, one anchored banner; UMP consent + iOS ATT |
-| Backend | Cloudflare Worker + KV, cron 00:00 UTC (`backend/`) |
-| Languages | 14 in the app (`en es fr de ru zh ja pt ko it tr ar fa el`), RTL for `ar`/`fa` |
-| Puzzle epoch | `2026-01-01` = puzzle #1. 547 answers; the list repeats from **2028-03-15** |
-
-### The one design property everything rests on
-
-The client can derive the day's puzzle **offline**, with the identical algorithm
-the Worker uses, from the same generated list. The Worker exists so a word can be
-corrected or an event puzzle run after release — not because the app needs it.
-`backend/test/parity.test.mjs` fails the build if the two copies ever drift.
-Never "simplify" one side without the other.
+|---|---|
+| Bundle id / package | `com.altixcode.worddrop` |
+| App Store Connect app | `6811885940` (version 1.0, `PREPARE_FOR_SUBMISSION`) |
+| In-app purchase | `worddrop_lifetime` — ASC id `6811885891`, state `MISSING_METADATA` |
+| RevenueCat project | `proje05b0359` |
+| RevenueCat apps | iOS `appf5a028a41e` · Android `app4622743f5b` |
+| RevenueCat entitlement | `pro` — ❌ **mismatch** — code reads `remove_ads` |
+| Play Console | **no record / no bundle uploaded** |
+| AdMob | nothing created |
 
 ---
 
-## 2. Verified, and how
+## What is done
 
-All run locally on 2026-09-15 at commit `79e6955`. One command re-runs the lot:
-
-```bash
-npm run verify     # typecheck, tests, i18n, UI rules, data drift, both exports, worker parity
-```
-
-| Check | Result |
-| --- | --- |
-| `npm run typecheck` | PASS |
-| `npm test` | PASS — 10 suites, 94 tests |
-| `node scripts/check-i18n.mjs` | PASS — 14 locales × 114 keys |
-| `node scripts/check-ui-rules.mjs` | PASS — 16 files, no colour literal, no untranslated string, no NativeWind no-op |
-| `node scripts/build-answers.mjs` | PASS — 547 answers (4:83, 5:189, 6:176, 7:99) |
-| `npx expo config --type public` | PASS |
-| `expo export` ios / android | PASS — ~8 MB Hermes bytecode each |
-| `backend`: typecheck + parity | PASS — 3 tests |
-| Worker live | PASS — `/health` ok; `2026-09-15` serves `HIGHKEY` #258, identical to the offline fallback |
-
-**These prove the JS graph resolves and the logic is sound. They do not prove the
-app launches.** Gates 3–6 of `docs/agents/11-delivery-playbook.md` §15.4 have
-never been run. See §5.
-
----
-
-## 3. Everything that has been provisioned
-
-### App Store Connect
-
-| Thing | Value |
-| --- | --- |
-| App id | `6811885940` — "WordDrop: Daily Word Game", SKU `worddrop-ios` |
-| Bundle id record | `23R989Y7B7` |
-| App info id | `3a181c0e-1fdd-44fa-9656-a8e05a042562` |
-| Version 1.0 id | `ec2393be-b809-4ad5-91b3-d0123266069a` |
-| IAP | `6811885891` · `worddrop_lifetime` · non-consumable · **$5.99** USA base, auto-equalised · state `MISSING_METADATA` |
-| Category | Games → Word (secondary subcategory Puzzle) |
-| Age rating | everything `NONE`/false **except `isAdvertising: true`** |
-| Content rights | `DOES_NOT_USE_THIRD_PARTY_CONTENT` |
-| Export compliance | answered in the binary — `ios.config.usesNonExemptEncryption: false` |
-| Listing locales done | `en-US`, `de-DE`, `fr-FR`, `es-ES`, `it` — description, keywords, promo, name, subtitle |
-| Privacy policy URL | set on every locale (the URL 404s today — §6.5) |
-| Support URL | `https://www.altixcode.com/contact` on every locale (200) |
-
-`asc versions check-readiness --version-id ec2393be-b809-4ad5-91b3-d0123266069a`
-currently reports exactly two things outstanding: **a build** and **screenshots**.
-
-### RevenueCat
-
-| Thing | Value |
-| --- | --- |
-| Project | `proje05b0359` (WordDrop) |
-| iOS app | `appf5a028a41e` — key `appl_ZztjeICpUKBKKRZeGrbcAFyuuRj` |
-| Android app | `app4622743f5b` — key `goog_NurwIooYjLJUlJPeBOyzsRiLPFN` |
-| Entitlement | `entlb7b44b4c9b`, lookup key **`pro`** ← the app checks this exact string |
-| Products | `prod6f040e12df` (App Store) · `prod8f69b0d480` (Play), store id `worddrop_lifetime` |
-| Offering | `ofrngc09e9ed06f` `default` (current) |
-| Package | `pkged6b8d873d6` `$rc_lifetime`, both products attached |
-| Apple credentials | **NOT configured** — `app_store_connect_api_key_configured: false` |
-| Play credentials | **NOT configured** |
-| Vendor number | currently the literal `"x"` — see §6.3 |
-
-### Cloudflare
-
-| Thing | Value |
-| --- | --- |
-| Worker | `worddrop-puzzle`, cron `0 0 * * *` |
-| URL | `https://worddrop-puzzle.worddrop-puzzle-worker.workers.dev` (in `app.json` → `extra.puzzleApiUrl`) |
-| KV | `5a352f43e31d4a1898b7f92ff76e40a8` (preview `f556c08ee9ac475d85fab105b06a23e5`) |
-| Account | `aa579917b406920cf3eefc3489003e1f` |
-| Cost | $0 — one request per player per day against a 100k/day free tier, one KV write per day against 1,000 |
-
-### GitHub
-
-Repository **variables**: `ENABLE_WORKER_DEPLOY=true`, `EXPO_PUBLIC_RC_IOS_KEY`,
-`EXPO_PUBLIC_RC_ANDROID_KEY`.
-
-Repository **secrets**: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`,
-`EXPO_PUBLIC_ADMOB_{IOS,ANDROID}_{APP_ID,BANNER,INTERSTITIAL,REWARDED}`,
-`EXPO_PUBLIC_REVENUECAT_{IOS,ANDROID}_KEY`.
-
-> The app reads `EXPO_PUBLIC_RC_*`; the `EXPO_PUBLIC_REVENUECAT_*` secrets are a
-> second naming convention kept only as a fallback in `deploy.yml`. There are no
-> rewarded ads in this app — those two secrets are unused.
-
-Workflows: `ci.yml` (PRs, hosted), `deploy.yml` (`v*` tags + dispatch),
-`worker-deploy.yml` (pushes touching `backend/`, hosted).
+- **Ads**: AdMob banner + one interstitial a day, in this app's own
+  implementation (`src/services/ads.ts`, `src/components/AdBanner.tsx`) rather
+  than the shared portfolio one.
+- **Interstitial**: app/result.tsx — one interstitial a day, after the result.
+- **Consent**: UMP gathered before the SDK starts; `canRequestAds` now gates the
+  banner, the interstitial and every ad request, failing closed. Consent is
+  published to `src/store/useAdsConsentStore.ts` so the banner re-renders when
+  it resolves.
+- **Entitlement**: the code reads `remove_ads`. RevenueCat still holds
+  `pro` — see the first item under "What is left", because in this state a
+  purchase unlocks nothing.
+- **Release gate**: `npm run check:release` refuses a build whose identifiers
+  are absent, blank, or still a Google test unit. It runs in the store-build workflow before anything is built.
+- **Tests**: 94 passing, typecheck clean.
+- **Localization**: 14 locales (including `ar` and `fa`)
+- **CI**: `.github/workflows/ci.yml` runs typecheck, the test suite and both
+  bundle exports.
+- **Store build**: `.github/workflows/deploy.yml` builds, signs and uploads to
+  TestFlight and Play. It runs `npm run check:release` in both build jobs,
+  with the identifiers declared once at workflow level — they were not
+  passed to the build at all before, which would have shipped test ad units.
+- **Verified on device**: Android — built, installed, launched, consent
+  resolved, and the AdMob test banner rendered anchored at the bottom with the
+  layout intact. iOS — built, installed, launched, renders, consent flow
+  reached.
 
 ---
 
-## 4. Work an agent can do without a human
+## What is left that an agent can do
 
-Ordered by value. Everything here is scriptable from this machine.
+1. **Fix the entitlement mismatch — this one ships broken.**
+   RevenueCat holds `pro`; the code reads `remove_ads`. A purchase would
+   succeed, charge the customer, and unlock nothing. Either create the
+   entitlement and attach the existing product:
 
-### 4.1 Finish the store listing localization
-The app ships 14 languages; the App Store listing has 5. Portfolio standard
-(`docs/agents/12-product-standards.md` §16.4) is the ten mandatory locales.
+   ```bash
+   rc entitlements create --lookup-key remove_ads \
+     --display-name "Pro — Ad-Free & Unlimited" --project-id proje05b0359 --json --yes
+   rc entitlements attach <entitlementId> <productId> --project-id proje05b0359 --json --yes
+   ```
 
-Missing on the App Store: `ru`, `zh-Hans`, `ja`, `pt-BR`, `ko`, `tr`, `ar-SA`,
-`el`. **App Store Connect has no Persian locale** — `fa` ships in the app and
-cannot be listed; do not delete it to "match". Google Play does support `fa-IR`,
-so the Play listing eventually carries all fourteen.
+   …or change `ENTITLEMENT_ID` back to `pro` in `src/services/purchases.ts`.
+   The first is the portfolio decision; do not leave them disagreeing.
 
-Write them into `Dev/scripts/store-metadata.json` under `worddrop.locales`, then:
+2. **Capture App Store screenshots.** None exist for this app. Both sizes are
+   required: 6.9" iPhone (1320×2868) and 13" iPad (2064×2752). Use
+   `Dev/scripts/store-screenshots.sh`, which drives the real app over its own
+   fixtures. They land in `store/screenshots/iphone-6.9/` and
+   `store/screenshots/ipad-13/`.
 
-```bash
-cd /Volumes/ExtremePro/Dev
-node scripts/check-store-metadata.mjs            # field limits; App Store rejects the whole save
-node scripts/upload-store-metadata.mjs worddrop --dry
-node scripts/upload-store-metadata.mjs worddrop
-```
+3. **Nothing to write for the listing** — 5 locales already carry a
+   description and keywords in App Store Connect. The copy lives in
+   `Dev/scripts/store-metadata.json`; it now discloses that ads are served by
+   Google AdMob, which the previous text did not.
 
-Keywords are per-market research, never a translation of the English field, and
-must not repeat words already in that locale's name or subtitle.
+4. **Upload the IAP review screenshot.** The in-app purchase
+   (`worddrop_lifetime`) is localized and priced at $3.99, and sits at
+   `MISSING_METADATA` for want of one screenshot:
 
-### 4.2 Re-attempt ads after a consent failure
-`initAds` gathers UMP consent once. If that throws — first launch offline, say —
-`canRequestAds` stays false and **no ad is requested for the rest of the
-session**. Correct and deliberate as a default, but a quiet revenue leak. Retry
-on the next foreground (`AppState` → `active`) when `started` is still false.
+   ```bash
+   asccli iap-review-screenshot upload --iap-id 6811885891 --file <path-to-png>
+   ```
 
-### 4.3 Top up the answer list before 2028-03-15
-`docs/word-list.md` has the procedure. Appending changes the order of *future*
-puzzles and never a published one (the Worker stores each day in KV the first
-time it is served).
+5. **Rename the purchase.** Its App Store display name and description still
+   describe only half of what it does. One purchase removes the ads *and*
+   unlocks the paid features, so both halves belong in the copy — something
+   like "Pro — Ad-Free & Unlimited" (name ≤ 30 chars, description ≤ 45):
 
-### 4.4 Housekeeping
-- `USING_TEST_ADS` in `src/config/env.ts` is exported and used by nothing.
-- `npm run check:release` fails on a dev machine because it runs under plain Node
-  and does not read `.env`. Export the variables or accept that it is a CI check.
+   ```bash
+   asccli iap-localizations update --localization-id <id> \
+     --name "Pro — Ad-Free & Unlimited" --description "<= 45 chars"
+   ```
 
----
-
-## 5. Work that needs a device — the real blocker
-
-None of this can be faked, and none of it is optional. Gates from
-`docs/agents/11-delivery-playbook.md` §15.4:
-
-| Gate | Command | Status |
-| --- | --- | --- |
-| 3. Native build | `npx expo prebuild --clean` then `npx expo run:ios` / `run:android` | **UNKNOWN** |
-| 4. **Launch** | `xcrun simctl launch <udid> com.altixcode.worddrop`, then screenshot | **UNKNOWN** |
-| 5. Core flow | play a real puzzle to a win and a loss, share the grid | **UNKNOWN** |
-| 6. Console | zero uncaught exceptions across the whole flow | **UNKNOWN** |
-
-Gate 4 is the one that matters most here: `plugins/withIOSSceneLifecycle.js` has
-never been exercised against this app's generated `AppDelegate.swift`. That
-plugin is the fix for the iOS 26/27 UIScene crash that once produced six
-"production ready" apps that could not open. `tsc`, `expo export` and
-`xcodebuild` all pass on an app that dies before its first frame.
-
-Then, in order:
-
-1. **Purchases** against `storekit/WordDrop.storekit` (see `storekit/README.md`).
-   Exercise all four paths — buy, restore, cancel, store-unreachable. The last is
-   the one that matters: an unreachable store must grant nothing.
-2. **Ads**: UMP form appears, the ATT prompt appears after it, a refusal means no
-   ad is requested at all, the interstitial fires once after the first result of
-   the day and never between guesses.
-3. **Screenshots** for the store, captured from the real build via
-   `.maestro/screenshots.yaml` — 6.7" iPhone and 13" iPad for the App Store,
-   phone and 7"/10" tablet for Play. Never a marketing render.
-4. **A review screenshot of the paywall**, uploaded to the IAP
-   (`asc iap-review-screenshot upload --file <path> --iap-id 6811885891`). Until
-   then the IAP stays `MISSING_METADATA` and cannot be submitted.
-5. **RTL check** under `ar` and `fa` on both platforms, per
-   `docs/agents/12-product-standards.md` §16.1.2–16.1.3. The verification there
-   is a screenshot, and `debug.force_rtl` is **not** honoured by React Native.
-6. `.maestro/daily-flow.yaml` has never run. Note its five-letter assumption: on a
-   day whose answer is 4, 6 or 7 letters it reports "not enough letters", which is
-   "not applicable today", not a pass.
+6. **RTL layout pass.** `ar` and `fa` copy is present and
+   `plugins/withAndroidRtl.js` is wired, but the layouts have not been walked in
+   RTL. Deliberately left until last.
 
 ---
 
-## 6. Manual work only the account owner can do
+## What only you can do
 
-Each of these was attempted and is genuinely blocked, not skipped.
+1. **AdMob — nothing exists for this app.** There is no write API at all; it is
+   console-only. Create the app on both platforms, then banner and interstitial ad units,
+   and note the ids. Answer **"No, not listed on a supported app store"** while
+   the app is unpublished — linking later does not change the ids.
 
-### 6.1 In-App Purchase Key — blocks every sale
-`react-native-purchases` 10 uses StoreKit 2, and RevenueCat will not record those
-transactions without an In-App Purchase Key. Without it a purchase succeeds at
-Apple and the entitlement never arrives.
+   Then publish a **GDPR message and a US-states message** under Privacy &
+   messaging. The SDK can only present a message that exists, and this app fails
+   closed on missing consent — so without them it shows **no ads at all** in the
+   EEA. Expect "Requires review — limited ad serving" for a couple of days after
+   the app goes live; that is not an integration bug.
 
-App Store Connect → **Users and Access → Integrations → In-App Purchase** →
-generate, download the `.p8` **once**, upload it to the RevenueCat iOS app. One
-key covers every app in the account, so this is once for the whole portfolio.
+2. **RevenueCat — Apple credentials.** `appf5a028a41e` (the App Store app in project
+   `proje05b0359`) has no Apple credentials, so App Store purchases cannot be
+   validated. This needs an interactive Apple ID sign-in with 2FA:
 
-### 6.2 RevenueCat store credentials
-Both flows need an interactive sign-in:
+   ```bash
+   rc setup apple appf5a028a41e
+   ```
 
-```bash
-env -u RC_API_KEY -u REVENUECAT_API_KEY -u REVENUECAT_SECRET_API_KEY \
-  rc apps apple setup appf5a028a41e --project-id proje05b0359    # Apple ID + 2FA
-env -u RC_API_KEY -u REVENUECAT_API_KEY -u REVENUECAT_SECRET_API_KEY \
-  rc setup google --project-id proje05b0359 --package com.altixcode.worddrop
-```
+   An App Store Connect *API* key can be set non-interactively; the separate
+   **In-App Purchase key** cannot, which is why this one is yours.
 
-The Google run on 2026-09-14 got as far as enabling the APIs and creating the
-service account, then failed granting Play access because the Play record does
-not exist (§6.4). Re-run it **after** creating that record; pass
-`--keep-old-keys` to leave the existing service-account key alone.
+3. **GitHub secrets.** The signing secrets are present. These are not, and CI now
+   fails without them — deliberately, because a build missing one earns nothing
+   while looking perfectly healthy. Note this repo lives under
+   `atasmohammadi/worddrop`, a **personal account**: the self-hosted
+   runners are org-scoped, so any job targeting them queues forever. Keep this
+   app's workflows on GitHub-hosted runners, or move the repo into the
+   AltixCode org:
 
-**The v2 API is not a way around either.** Posting an App Store Connect key to
-`/projects/…/apps/…` returns 200 and stores nothing — verified across PATCH
-(405), and POST with the key as raw PEM, as base64, and as stripped PEM body.
-Re-read the app afterwards; that is what shows the truth. Details in
-`docs/setup-services.md` §2.
+   ```
+   EXPO_PUBLIC_ADMOB_IOS_APP_ID
+   EXPO_PUBLIC_ADMOB_ANDROID_APP_ID
+   EXPO_PUBLIC_ADMOB_IOS_BANNER
+   EXPO_PUBLIC_ADMOB_ANDROID_BANNER
+   EXPO_PUBLIC_ADMOB_IOS_INTERSTITIAL
+   EXPO_PUBLIC_ADMOB_ANDROID_INTERSTITIAL
+   EXPO_PUBLIC_RC_IOS_KEY
+   EXPO_PUBLIC_RC_ANDROID_KEY
+   ```
 
-### 6.3 Fix the RevenueCat vendor number
-It currently holds the literal string `"x"`, written while mapping which fields
-the API actually persists. The API rejects both `null` and `""`, so it can only
-be overwritten. Find the 8-digit number in App Store Connect → Payments and
-Financial Reports, then either run §6.2's Apple flow (which sets it) or:
+   Set each with `gh secret set <KEY> --repo atasmohammadi/worddrop`. The RevenueCat
+   public SDK keys are fetchable — `rc api GET "/projects/proje05b0359/apps/appf5a028a41e/public_api_keys"`
+   — the AdMob ones come from step 1.
 
-```bash
-printf '{"app_store":{"app_store_connect_vendor_number":"NNNNNNNN"}}' | \
-env -u RC_API_KEY -u REVENUECAT_API_KEY -u REVENUECAT_SECRET_API_KEY \
-  rc api POST /projects/proje05b0359/apps/appf5a028a41e --body @-
-```
+4. **The legal URLs are wrong and they 404.** `src/config/legal.ts` points at
+   `https://www.hushtunnel.com/legal/worddrop-privacy` — **hushtunnel.com**, a leftover from the HushTunnel
+   template, not an AltixCode domain at all.
 
-### 6.4 Create the Google Play record
-`gplay edits create --package com.altixcode.worddrop` returns **404 Package not
-found** — the Developer API cannot create an application. Create it by hand in
-the Play Console, grant the service account
-(`~/Certificates/play-store-service-account.json`) access, then create and price
-the `worddrop_lifetime` product there. A 403 later would mean missing access; a
-404 means the record still does not exist.
+   Nothing is served there: altixcode.com only has `/legal/privacy`,
+   `/legal/terms` and `/legal/cookies`. Both stores require a working privacy
+   policy, the App Store record needs the same URL, and the policy text must now
+   disclose that ads are served by Google AdMob and that ATT/UMP consent governs
+   personalisation. Either publish per-app pages under altixcode.com or point
+   `src/config/legal.ts` at the generic ones — either way the ads paragraph has to be
+   written.
 
-### 6.5 Deploy the legal pages
-Both URLs 404 today, and App Review follows the link:
+5. **Play Console — create the app.** `com.altixcode.worddrop` is not recognised by
+   the Publishing API, which means no app record exists or no bundle has ever
+   been uploaded. A Play app has **no package name until its first bundle is
+   uploaded**, and until then no in-app product can be created. The order is:
+   create app → upload an AAB to internal testing → *then* create the product.
+   Build that AAB from a non-production profile so internal testers generate no
+   live impressions.
 
-```bash
-for k in privacy terms; do
-  curl -s -o /dev/null -w "%{http_code} worddrop-$k\n" \
-    "https://www.hushtunnel.com/legal/worddrop-$k"; done
-```
+6. **App Store review contact.** No contact email or phone is set in App Store
+   review information; the readiness check fails on it.
 
-The `worddrop` profile is already written into
-`HushTunnel-Billing-Dashboard/lib/legal/altixcode-apps.ts`, along with the
-`advertising` support that keeps the page from claiming "no advertising SDK" for
-this app. **It is uncommitted there and the file does not compile**: an unrelated,
-pre-existing `slideforge` entry is missing its required `networkUse` and
-`processedLocally` fields. Fill those in truthfully (do not guess SlideForge's
-network behaviour), commit, deploy, then re-run the curl above.
+7. **Runners.** This repo's workflows run on GitHub-hosted runners, so the
+   stopped self-hosted runner does not block it — but the self-hosted macOS
+   runner has been down since 2026-09-13 (it filled the disk), and any job that
+   does target it will queue forever.
 
-### 6.6 CI signing secrets — the release pipeline cannot sign anything
-`netpulse` carries these; `worddrop` has none, so `deploy.yml` fails at the
-signing steps. Attempting to set them from here is blocked by the permission
-classifier, so run them yourself:
+8. **No EAS project is linked.** `eas env:list` and any EAS build refuse with
+   "EAS project not configured", and a robot token cannot configure it
+   interactively — it needs `eas init --id <project-id> --non-interactive`, with
+   `owner` and the project id then set by hand in the app config.
 
-```bash
-gh secret set APP_STORE_CONNECT_API_KEY_CONTENT --repo atasmohammadi/worddrop < ~/Certificates/AuthKey_NGDJQCGYXQ.p8
-gh secret set APP_STORE_CONNECT_API_KEY_ID      --body NGDJQCGYXQ --repo atasmohammadi/worddrop
-gh secret set APP_STORE_CONNECT_API_KEY_ISSUER  --body c7e17516-b80c-42fe-a192-229b4cee0a48 --repo atasmohammadi/worddrop
-gh secret set PLAY_STORE_SERVICE_ACCOUNT_JSON   --repo atasmohammadi/worddrop < ~/Certificates/play-store-service-account.json
-```
-
-There is **no Android upload keystore** for this app anywhere on disk. One has to
-be generated, then stored both as repository secrets
-(`APP_KEYSTORE_BASE64`, `APP_KEYSTORE_PASSWORD`, `APP_KEYSTORE_ALIAS`,
-`APP_KEY_PASSWORD`) and somewhere you can retrieve it — GitHub secrets are
-write-only, so a keystore that exists *only* there is one incident away from a
-Play upload-key reset:
-
-```bash
-keytool -genkeypair -v -keystore ~/Certificates/worddrop-upload.jks \
-  -alias worddrop -keyalg RSA -keysize 2048 -validity 10000
-base64 -i ~/Certificates/worddrop-upload.jks | \
-  gh secret set APP_KEYSTORE_BASE64 --repo atasmohammadi/worddrop
-```
-
-### 6.7 Privacy label and Data safety
-Console-only on both stores, and they must match the binary. This app is **not**
-"collects no data": disclose **AdMob** (device identifiers, IP, coarse usage —
-tracking only with consent) *and* **RevenueCat** (anonymous app user id, store
-receipt, country). `docs/store-listing.md` has the exact table.
-
-### 6.8 Content review of the answer list
-Read all 547 rows for offensive words, ambiguous entries, and clues that give the
-answer away. Nothing automates this.
-
-```bash
-npm run schedule -- --all      # the review sheet
-npm run schedule               # the next 14 days
-```
-
-### 6.9 GitHub Actions is quota-blocked
-A triggered run sits at `pending` with **zero jobs created** while the repository
-reports Actions enabled — the account's storage quota signature, not a
-configuration fault. 22 GB of artifacts were purged on 2026-09-14 and GitHub
-recalculates usage every 6–12 hours. **No workflow has ever run green against
-this repository**; everything in §2 was run locally. Re-run once accounting
-catches up.
-
-Related: no self-hosted runner is registered to this repo (they belong to the
-AltixCode org; this repo is personal), which is why CI, the Worker deploy and the
-release pipeline's Linux jobs were retargeted to `ubuntu-24.04`. The **iOS job
-still defaults to the self-hosted Mac mini** because the signing identity lives
-there and hosted macOS minutes bill at 10×; a release build therefore needs that
-runner registered here, or a dispatch with `ios_runner: github-hosted`.
+9. **Play Developer Reporting API is disabled** for project 1013025269741, so
+   `gplay apps list` returns 403. The service account cannot enable it
+   (`serviceusage.services.enable` is missing); it has to be enabled in the
+   Cloud Console.
 
 ---
 
-## 7. Traps that have already cost time
+## Fixed recently — context for anything that looks odd
 
-- **`RC_API_KEY` in `~/.zshrc` is scoped to the HushTunnel project** and shadows
-  the profile's OAuth login. Any `rc` command against another project fails with
-  `The API key does not belong to the project …`. Strip the three env vars and
-  pass `--project-id`, as in §6.2. The profile's *active* project is also
-  BlockJam (`proj62d4d4fd`), so an unflagged command lands there.
-- **Apple has no app-creation endpoint.** `asccli apps` only lists and updates.
-  The record was created with `asc iris apps create`, which drives App Store
-  Connect's private API using the browser session on this machine (`asc iris
-  status`). `asc iris apps list` returning `{"data":[]}` does **not** mean the
-  session is dead.
-- **Wrangler 4 KV commands are local by default.** `wrangler kv key get …`
-  without `--remote` reports `Value not found` for a key sitting in production.
-- **A 200 from RevenueCat's app endpoint is not evidence.** Re-read the resource.
-- **Cross-app contamination is real.** On 2026-09-15 the entitlement id in
-  `src/services/purchases.ts` had become `remove_ads`, which is BlockJam's key.
-  WordDrop's is `pro`. That defect is silent end to end: the purchase completes,
-  the entitlement is never found, the customer pays for nothing. If you touch
-  that constant, check it against `rc entitlements list --project-id proje05b0359`.
-- **`git status` before you start.** Another session has twice left substantial
-  uncommitted work in this tree.
+- **Ad unit ids came only from `extra.admob` in `app.json`** — committed as empty
+  strings, with Google's *test* app ids hardcoded beside them. A store build
+  would have served test ads and earned nothing. Units and app ids now come from
+  the environment through `app.config.ts`, and `check:release` refuses a build
+  without them.
+- **Consent was gathered but never acted on.** A player who declined still got
+  non-personalised ads rather than none. `canRequestAds` now gates the banner,
+  the interstitial and every ad request, failing closed.
+- The ads SDK was on `^16.5.0`; it is pinned to 16.3.4.
 
 ---
 
-## 8. Definition of done
+## Traps already paid for — do not rediscover these
 
-Submission may be claimed only when **all** of these hold:
+- **`react-native-google-mobile-ads` must stay pinned to exactly 16.3.4.** 16.4+
+  pulls play-services-ads 25.3+, whose Kotlin 2.3.0 metadata SDK 57's Kotlin
+  2.1.0 refuses to read. Forcing Kotlin up instead breaks `react-native-purchases`
+  and `safe-area-context`.
+- **iOS 26+ needs UIScene adoption** (`plugins/withIOSSceneLifecycle`). Without
+  it the app installs, launches, and quits straight back to the home screen,
+  with nothing on screen to explain why.
+- **`JAVA_HOME` must be** `/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home`
+  for any Android build. Gradle otherwise falls back to JDK 25 and CMake dies.
+- **A missing identifier fails nothing.** The app falls back to Google's test ad
+  units, works perfectly, and earns nothing. That is what `check:release` exists
+  to stop.
+- **`expo run:android` can fail in a second and leave the previous APK
+  installed** — the app then launches, renders, and proves nothing. Check the
+  build's own exit code before believing a screenshot.
+- **Simulator.app is missing from this Xcode install**, so the ATT prompt cannot
+  be dismissed on iOS. iOS verification ends at "builds, installs, launches,
+  renders"; drive interaction on Android.
 
-- [ ] Every shipped feature genuinely works on device; no stub or simulated path
-- [ ] Store listing, `i18n` and release notes claim only what the build does
-- [ ] Gates 1–6 pass on **both** an iOS simulator and an Android emulator (§5)
-- [ ] Paywall shows the live store price, links working legal pages, and grants
-      nothing when the store is unreachable
-- [ ] Purchase, restore, cancel and offline paths exercised on both stores
-- [ ] Privacy policy and terms return 200 and match the binary's real behaviour
-- [ ] Both store records complete: icon, screenshots, pricing, privacy label,
-      content rating, export compliance
-- [ ] The release workflow has completed green end to end, and the GitHub Release
-      carries `.ipa`, `.apk`, `.aab` and `SHA256SUMS.txt`
-- [ ] This file records the commit, the exact commands run, their results, and
-      every remaining blocker
+---
 
-## 9. Where things are
+## Commands
 
-```
-app/              screens: index, game, result, stats, archive, settings, paywall
-src/game/         pure, fully tested logic — evaluateGuess, selection, streak, shareGrid, codec
-src/data/         GENERATED — rebuild with scripts/build-answers.mjs, build-dictionary.mjs
-src/services/     purchases (RevenueCat), ads (AdMob + UMP + ATT), notifications, puzzleService
-src/store/        Zustand + AsyncStorage; the persisted board holds the answer encoded
-src/i18n/         14 locales in one file; every user-facing string goes through t()
-backend/          Cloudflare Worker + KV, and the parity test against the client
-plugins/          iOS UIScene lifecycle, Android locales, Android RTL
-storekit/         StoreKit test configuration and how to use it
-docs/             setup-services.md (accounts), store-listing.md (ASO), word-list.md (content)
+```bash
+npm run typecheck && npm test          # both clean as of 2026-09-15
+npm run check:release                  # fails until the identifiers exist — correct
+../scripts/verify-app.sh worddrop com.altixcode.worddrop   # full build + device verification, both platforms
 ```
 
-`AGENTS.md` (symlinked to `CLAUDE.md` and `GEMINI.md`) carries the rules for
-working in this repo. Portfolio-wide standards live in
-`/Volumes/ExtremePro/Dev/docs/agents/`.
+The portfolio-wide notes live in `Dev/AGENTS.md`, and the store/console playbook
+in `Dev/gridlock-pop/docs/mobile-playbook.md`. The shared ad integration is
+ported by `Dev/scripts/port-ads.mjs` from CapFlow, which is the reference.
+
+---
+
+## One caution
+
+Everything in this repo is **uncommitted**. Read `git status` before assuming
+the working tree matches `main`.
