@@ -31,11 +31,25 @@ export const Keyboard: React.FC<Props> = ({ states, disabled, onKey, onEnter, on
   );
 
   const gap = 5;
-  const available = Math.min(width, 520) - 16;
+  // The cap is what made the keyboard look wrong on a 13" iPad.
+  //
+  // At `Math.min(width, 520)` the keyboard is the same physical size on a 1032pt
+  // iPad as on a 390pt phone -- a small island of 45pt keys marooned in the
+  // bottom third of a very large screen, which is what "most of the space is
+  // empty and the characters are tiny" describes. Points are density
+  // independent, so the letters were never shrinking; everything around them
+  // was growing and they were not.
+  const isTablet = width >= 700;
+  const available = Math.min(width, isTablet ? 820 : 520) - 16;
   const keyWidth = Math.floor((available - gap * 9) / 10);
   // 48dp is the Android minimum and the iOS 44pt minimum sits inside it; the
-  // keyboard never shrinks below it however narrow the device is.
-  const keyHeight = Math.max(48, Math.min(58, Math.round(keyWidth * 1.35)));
+  // keyboard never shrinks below it however narrow the device is. The upper
+  // bound lifts on a tablet for the same reason the cap does.
+  const keyHeight = Math.max(48, Math.min(isTablet ? 76 : 58, Math.round(keyWidth * 1.35)));
+  // Scale the glyph with the key, the way GuessGrid already scales its letters
+  // with the tile (`size * 0.46`). A fixed 16 inside a 75pt key is the defect,
+  // not the key size.
+  const keyFontSize = Math.max(16, Math.round(keyWidth * 0.36));
 
   const backgroundFor = (letter: string): string => {
     switch (states[letter]) {
@@ -100,7 +114,7 @@ export const Keyboard: React.FC<Props> = ({ states, disabled, onKey, onEnter, on
             >
               <Text
                 allowFontScaling={false}
-                style={{ fontSize: 16, fontWeight: '700', color: foregroundFor(letter) }}
+                style={{ fontSize: keyFontSize, fontWeight: '700', color: foregroundFor(letter) }}
               >
                 {letter}
               </Text>
