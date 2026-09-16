@@ -1,7 +1,12 @@
 name: Build, Release & Store Submission Pipeline
 
 on:
+  # Every push to main builds both platforms. Three self-hosted macOS runners
+  # each take one job at a time, so the fleet pushing is a shallow queue, not
+  # one build per repo at once.
   push:
+    branches:
+      - main
     tags:
       - 'v*'
   workflow_dispatch:
