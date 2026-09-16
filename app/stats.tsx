@@ -38,7 +38,8 @@ export default function StatsScreen() {
 
   return (
     <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: theme.background }}>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 16 }}>
+      <ScrollView
+        style={{ flex: 1 }} contentContainerStyle={{ padding: 20, gap: 16 }}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
           <Metric label={t('statsPlayedLabel')} value={String(stats.played)} />
           <Metric label={t('winRate')} value={`${winPercentage(stats)}%`} />

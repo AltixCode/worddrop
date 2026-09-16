@@ -21,10 +21,22 @@ export const AdBanner: React.FC = () => {
   const canRequestAds = useAdsConsentStore((s) => s.consent.canRequestAds);
   const [failed, setFailed] = useState(false);
 
+  // Capture mode: no ad, at all, while a store screenshot is being taken.
+  //
+  // A live banner in a listing is someone else's artwork in our shelf space, and
+  // a Debug build serves Google's test creative with a "Test mode" badge on it.
+  // Dismissing the consent sheet to make the app visible to the capture tool is
+  // what lets the ad load, so without this the ad-free state and the capturable
+  // state are mutually exclusive.
+  //
+  // __DEV__ means it cannot exist in a release build, and check-release-config
+  // refuses EXPO_PUBLIC_CAPTURE_MODE outright, so it cannot ship by accident.
+  if (__DEV__ && process.env.EXPO_PUBLIC_CAPTURE_MODE === '1') return null;
+
   if (isPro || failed || !canRequestAds) return null;
 
   return (
-    <View style={{ alignItems: 'center', paddingVertical: 4 }}>
+    <View style={{ flexShrink: 0, alignItems: 'center', paddingVertical: 4 }}>
       <BannerAd
         unitId={BANNER_AD_UNIT_ID}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}

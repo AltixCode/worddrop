@@ -106,6 +106,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView
+        style={{ flex: 1 }}
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, gap: 16 }}
         showsVerticalScrollIndicator={false}
       >
