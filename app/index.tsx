@@ -1,3 +1,4 @@
+import { useTabletColumn } from '@/theme/useTabletColumn';
 import React, { useMemo } from 'react';
 import { View, Text, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -77,6 +78,7 @@ const NavRow: React.FC<{
 export default function HomeScreen() {
   const router = useRouter();
   const theme = useTheme();
+  const tabletColumn = useTabletColumn();
   const today = localDateString();
   const stats = useGameStore((s) => s.stats);
   const hydrated = useGameStore((s) => s.hydrated);
@@ -107,7 +109,9 @@ export default function HomeScreen() {
     <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, gap: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24, gap: 16 ,
+          ...tabletColumn,
+        }}
         showsVerticalScrollIndicator={false}
       >
         <View style={{ marginTop: 8 }}>
