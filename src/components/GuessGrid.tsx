@@ -180,8 +180,16 @@ export const GuessGrid: React.FC<GridProps> = ({
 
   // The board must fit the narrowest supported phone with its gutters intact,
   // and must not grow into a wall of letters on a tablet.
+  //
+  // 380 was that cap on every screen, and it was the half of this pair that
+  // never got the tablet treatment the keyboard below it did. The result on a
+  // 13" iPad was a 380pt board sitting above an 820pt keyboard with a void
+  // between them -- three disconnected pieces rather than one screen. 560 keeps
+  // the board comfortably narrower than the keyboard, so the two still read as
+  // belonging to each other, and takes back most of that gap.
   const gap = 6;
-  const available = Math.min(width - 40, 380);
+  const isTablet = width >= 700;
+  const available = Math.min(width - 40, isTablet ? 560 : 380);
   const size = Math.floor((available - gap * (length - 1)) / length);
 
   return (
