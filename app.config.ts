@@ -13,10 +13,20 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
  * stops the test fallback from reaching the stores.
  */
 
+// `||`, never `??`, for an identifier that must not be empty.
+//
+// A GitHub Actions env var mapped from a missing secret arrives as an EMPTY
+// STRING, not undefined -- and `??` keeps an empty string. That ships
+// `GADApplicationIdentifier = ""`, which makes the Google Mobile Ads SDK raise
+// at startup: the app dies on launch, and Apple rejects it for crashing. Four
+// apps in this portfolio were rejected for exactly that, which is why
+// `attach-verified-build.py` reads the binary before attaching it to a version.
+// `||` falls back on the empty string too, so the test identifier is used and
+// the app starts.
 const IOS_ADMOB_APP_ID =
-  process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID ?? 'ca-app-pub-3940256099942544~1458002511';
+  process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID || 'ca-app-pub-3940256099942544~1458002511';
 const ANDROID_ADMOB_APP_ID =
-  process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID ?? 'ca-app-pub-3940256099942544~3347511713';
+  process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID || 'ca-app-pub-3940256099942544~3347511713';
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   // The ads plugin is already configured in app.json with the test app ids. Replacing the
