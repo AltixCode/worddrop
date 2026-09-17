@@ -70,3 +70,28 @@ Useful alongside it:
 npm run schedule              # which answer lands on which day
 npm run schedule -- --all     # the full review sheet, for the content pass
 ```
+
+## 1. Store screenshots — the frame is reviewed by a human
+
+**No frame whose status bar reads `◀ OtherApp` ever reaches a listing.** It
+tells an App Store reviewer this app was captured by switching out of another of
+ours, which on a portfolio already rejected under Guideline 4.3(a) Design Spam
+is evidence for the accusation. One reached a live iPad listing. iOS draws that
+affordance when an app is launched by another app -- `simctl openurl`, a Metro
+reload, or a relaunch straight after another app was foregrounded -- and it
+persists into the next launch. Relaunch a second time, or reboot the simulator,
+before capturing.
+
+Every other gate treats the status bar as chrome and excludes it, so:
+
+    python3 scripts/shotcheck/check-shot-backlink.py <frame.png>...
+
+Read **all** of its output and the checker's own exit code, never one piped
+through `tail`. Then open the image.
+
+Also disqualifying, and only the last is machine-checkable: an on-screen
+keyboard over the frame, an empty form field, a system alert (ATT or consent)
+covering the app, a LogBox toast, and an IAP frame whose buy button carries no
+price -- `scripts/shotcheck/check-iap-text.py` reads the frame for that one.
+
+Full rules: `docs/agents/23-store-screenshots.md` in the Dev workspace.
