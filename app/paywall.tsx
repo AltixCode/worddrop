@@ -113,15 +113,16 @@ export default function PaywallScreen() {
             accessibilityRole="button"
             accessibilityLabel={ctaLabel}
             accessibilityState={{ disabled: loading }}
-            style={({ pressed }) => ({
+            style={{
               backgroundColor: theme.primary,
               borderRadius: 16,
               minHeight: 56,
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: loading ? 0.6 : pressed ? 0.85 : 1,
-            })}
-          >
+              opacity: loading ? 0.6 : 1,
+            }}
+              className="active:opacity-70"
+            >
             {loading ? (
               <ActivityIndicator color={theme.onPrimary} />
             ) : (
@@ -140,13 +141,14 @@ export default function PaywallScreen() {
             disabled={loading}
             accessibilityRole="button"
             accessibilityLabel={t('restorePurchases')}
-            style={({ pressed }) => ({
+            style={{
               minHeight: 48,
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: pressed ? 0.7 : 1,
-            })}
-          >
+              opacity: 1,
+            }}
+              className="active:opacity-70"
+            >
             <Text style={{ color: theme.primary, fontSize: 14.5, fontWeight: '700' }}>
               {t('restorePurchases')}
             </Text>

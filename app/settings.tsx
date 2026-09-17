@@ -79,8 +79,9 @@ const Row: React.FC<
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={title}
-      style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-    >
+      style={{ opacity: 1 }}
+              className="active:opacity-70"
+            >
       {content}
     </Pressable>
   );

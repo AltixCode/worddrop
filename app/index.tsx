@@ -41,7 +41,7 @@ const NavRow: React.FC<{
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={title}
-      style={({ pressed }) => ({
+      style={{
         flexDirection: 'row',
         alignItems: 'center',
         gap: 14,
@@ -51,9 +51,10 @@ const NavRow: React.FC<{
         borderRadius: 16,
         padding: 16,
         minHeight: 64,
-        opacity: pressed ? 0.75 : 1,
-      })}
-    >
+        opacity: 1,
+      }}
+              className="active:opacity-70"
+            >
       <View
         style={{
           width: 38,
@@ -159,7 +160,7 @@ export default function HomeScreen() {
             testID="home-play"
             accessibilityRole="button"
             accessibilityLabel={ctaLabel}
-            style={({ pressed }) => ({
+            style={{
               backgroundColor: theme.primary,
               borderRadius: 16,
               minHeight: 54,
@@ -167,9 +168,10 @@ export default function HomeScreen() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: 10,
-              opacity: pressed ? 0.85 : 1,
-            })}
-          >
+              opacity: 1,
+            }}
+              className="active:opacity-70"
+            >
             {loading && !board ? (
               <ActivityIndicator color={theme.onPrimary} />
             ) : (

@@ -114,7 +114,7 @@ export default function ResultScreen() {
           testID="result-share"
           accessibilityRole="button"
           accessibilityLabel={t('shareResult')}
-          style={({ pressed }) => ({
+          style={{
             backgroundColor: theme.primary,
             borderRadius: 16,
             minHeight: 54,
@@ -122,9 +122,10 @@ export default function ResultScreen() {
             alignItems: 'center',
             justifyContent: 'center',
             gap: 10,
-            opacity: pressed ? 0.85 : 1,
-          })}
-        >
+            opacity: 1,
+          }}
+              className="active:opacity-70"
+            >
           <Share2 size={18} color={theme.onPrimary} />
           <Text style={{ color: theme.onPrimary, fontSize: 16, fontWeight: '800' }}>
             {t('shareResult')}
@@ -167,14 +168,14 @@ export default function ResultScreen() {
         <Pressable
           onPress={() => router.push('/stats')}
           accessibilityRole="button"
-          style={({ pressed }) => ({
+          style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
             gap: 8,
             minHeight: 48,
-            opacity: pressed ? 0.7 : 1,
-          })}
+            opacity: 1,
+          }}
         >
           <BarChart3 size={17} color={theme.primary} />
           <Text style={{ color: theme.primary, fontWeight: '700', fontSize: 15 }}>
@@ -186,7 +187,7 @@ export default function ResultScreen() {
           <Pressable
             onPress={() => router.push('/paywall')}
             accessibilityRole="button"
-            style={({ pressed }) => ({
+            style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
@@ -196,8 +197,8 @@ export default function ResultScreen() {
               borderWidth: 1,
               borderColor: theme.border,
               backgroundColor: theme.surface,
-              opacity: pressed ? 0.75 : 1,
-            })}
+              opacity: 1,
+            }}
           >
             <Crown size={16} color={theme.warning} />
             <Text style={{ color: theme.text, fontWeight: '700', fontSize: 14.5 }}>

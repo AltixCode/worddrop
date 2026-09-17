@@ -77,14 +77,14 @@ export default function ArchiveScreen() {
             onPress={() => router.push('/paywall')}
             accessibilityRole="button"
             accessibilityLabel={t('lifetimeAccessPlain')}
-            style={({ pressed }) => ({
+            style={{
               backgroundColor: theme.primary,
               borderRadius: 16,
               minHeight: 54,
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: pressed ? 0.85 : 1,
-            })}
+              opacity: 1,
+            }}
           >
             <Text style={{ color: theme.onPrimary, fontSize: 16, fontWeight: '800' }}>
               {t('lifetimeAccessPlain')}
@@ -141,7 +141,7 @@ export default function ArchiveScreen() {
               }
               accessibilityRole="button"
               accessibilityLabel={`${t('puzzleNumber', { number: item.number })}, ${label}`}
-              style={({ pressed }) => ({
+              style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 gap: 14,
@@ -151,8 +151,8 @@ export default function ArchiveScreen() {
                 borderRadius: 14,
                 padding: 16,
                 minHeight: 64,
-                opacity: pressed ? 0.75 : 1,
-              })}
+                opacity: 1,
+              }}
             >
               {status === 'won' ? (
                 <Check size={18} color={color} />

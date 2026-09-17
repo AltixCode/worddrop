@@ -79,15 +79,16 @@ export const Keyboard: React.FC<Props> = ({ states, disabled, onKey, onEnter, on
               accessibilityRole="button"
               accessibilityLabel={t('enterKey')}
               accessibilityState={{ disabled }}
-              style={({ pressed }) => ({
+              style={{
                 width: keyWidth * 1.6,
                 height: keyHeight,
                 borderRadius: 8,
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: theme.primary,
-                opacity: disabled ? 0.45 : pressed ? 0.8 : 1,
-              })}
+                opacity: disabled ? 0.45 : 1,
+              }}
+              className="active:opacity-70"
             >
               <CornerDownLeft size={18} color={theme.onPrimary} />
             </Pressable>
@@ -102,15 +103,16 @@ export const Keyboard: React.FC<Props> = ({ states, disabled, onKey, onEnter, on
               accessibilityRole="button"
               accessibilityLabel={t('letterA11y', { letter })}
               accessibilityState={{ disabled }}
-              style={({ pressed }) => ({
+              style={{
                 width: keyWidth,
                 height: keyHeight,
                 borderRadius: 8,
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: backgroundFor(letter),
-                opacity: disabled ? 0.5 : pressed ? 0.7 : 1,
-              })}
+                opacity: disabled ? 0.5 : 1,
+              }}
+              className="active:opacity-70"
             >
               <Text
                 allowFontScaling={false}
@@ -129,15 +131,16 @@ export const Keyboard: React.FC<Props> = ({ states, disabled, onKey, onEnter, on
               accessibilityRole="button"
               accessibilityLabel={t('deleteKey')}
               accessibilityState={{ disabled }}
-              style={({ pressed }) => ({
+              style={{
                 width: keyWidth * 1.6,
                 height: keyHeight,
                 borderRadius: 8,
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: theme.keyBackground,
-                opacity: disabled ? 0.45 : pressed ? 0.7 : 1,
-              })}
+                opacity: disabled ? 0.45 : 1,
+              }}
+              className="active:opacity-70"
             >
               <Delete size={18} color={theme.keyText} />
             </Pressable>
