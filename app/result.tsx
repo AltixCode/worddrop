@@ -12,9 +12,12 @@ import { isStreakBroken } from '../src/game/streak';
 import { MAX_ATTEMPTS } from '../src/game/types';
 import { showInterstitial } from '../src/services/ads';
 import { t } from '../src/i18n';
+import { useTabletColumn } from '../src/theme/useTabletColumn';
 
 export default function ResultScreen() {
   const router = useRouter();
+
+  const tabletColumn = useTabletColumn();
   const theme = useTheme();
   const params = useLocalSearchParams<{ date?: string }>();
   const date = params.date ?? localDateString();
@@ -73,7 +76,7 @@ export default function ResultScreen() {
 
   return (
     <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: theme.background }}>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 16 }}>
+      <ScrollView contentContainerStyle={{ padding: 20, gap: 16 , ...tabletColumn }}>
         <View style={{ gap: 6 }}>
           <Text style={{ fontSize: 13, fontWeight: '700', color: theme.primary }}>
             {t('puzzleNumber', { number: board.number })}

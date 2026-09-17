@@ -8,6 +8,7 @@ import { localDateString } from '../src/game/selection';
 import { MAX_ATTEMPTS } from '../src/game/types';
 import { AdBanner } from '../src/components/AdBanner';
 import { t } from '../src/i18n';
+import { useTabletColumn } from '../src/theme/useTabletColumn';
 
 const Metric: React.FC<{ label: string; value: string }> = ({ label, value }) => {
   const theme = useTheme();
@@ -31,6 +32,8 @@ const Metric: React.FC<{ label: string; value: string }> = ({ label, value }) =>
 
 export default function StatsScreen() {
   const theme = useTheme();
+
+  const tabletColumn = useTabletColumn();
   const stats = useGameStore((s) => s.stats);
   const today = localDateString();
   const liveStreak = isStreakBroken(stats.lastPlayedDate, today) ? 0 : stats.currentStreak;
@@ -39,7 +42,7 @@ export default function StatsScreen() {
   return (
     <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView
-        style={{ flex: 1 }} contentContainerStyle={{ padding: 20, gap: 16 }}>
+        style={{ flex: 1 }} contentContainerStyle={{ padding: 20, gap: 16 , ...tabletColumn }}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
           <Metric label={t('statsPlayedLabel')} value={String(stats.played)} />
           <Metric label={t('winRate')} value={`${winPercentage(stats)}%`} />

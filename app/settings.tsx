@@ -12,6 +12,7 @@ import { showPrivacyOptions, getConsentState } from '../src/services/ads';
 import { restorePurchases } from '../src/services/purchases';
 import { PRIVACY_POLICY_URL, TERMS_OF_USE_URL } from '../src/config/legal';
 import { t } from '../src/i18n';
+import { useTabletColumn } from '../src/theme/useTabletColumn';
 
 const REMINDER_TIMES = ['09:00', '12:00', '18:00', '20:00', '21:30'];
 
@@ -87,6 +88,8 @@ const Row: React.FC<
 
 export default function SettingsScreen() {
   const theme = useTheme();
+
+  const tabletColumn = useTabletColumn();
   const router = useRouter();
   const settings = useGameStore((s) => s.settings);
   const setSettings = useGameStore((s) => s.setSettings);
@@ -173,7 +176,7 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: theme.background }}>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 22 }}>
+      <ScrollView contentContainerStyle={{ padding: 20, gap: 22 , ...tabletColumn }}>
         {notice && (
           <Text style={{ color: theme.danger, fontSize: 13.5, lineHeight: 19 }}>{notice}</Text>
         )}

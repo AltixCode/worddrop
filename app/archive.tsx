@@ -8,6 +8,7 @@ import { useTheme } from '../src/theme/useTheme';
 import { dayIndexForDate, dateForDayIndex, localDateString } from '../src/game/selection';
 import { ForwardChevron } from '../src/components/DirectionalIcons';
 import { t } from '../src/i18n';
+import { useTabletColumn } from '../src/theme/useTabletColumn';
 
 interface Row {
   date: string;
@@ -16,6 +17,8 @@ interface Row {
 
 export default function ArchiveScreen() {
   const router = useRouter();
+
+  const tabletColumn = useTabletColumn();
   const theme = useTheme();
   const isPro = useGameStore((s) => s.isPro);
   const boards = useGameStore((s) => s.boards);
@@ -109,7 +112,7 @@ export default function ArchiveScreen() {
       <FlatList
         data={rows}
         keyExtractor={(row) => row.date}
-        contentContainerStyle={{ padding: 20, gap: 10 }}
+        contentContainerStyle={{ padding: 20, gap: 10 , ...tabletColumn }}
         renderItem={({ item }) => {
           const board = boards[item.date];
           const status: 'won' | 'lost' | 'in_progress' | 'unplayed' =

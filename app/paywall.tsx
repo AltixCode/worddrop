@@ -7,6 +7,7 @@ import { usePaywall } from '../src/hooks/usePaywall';
 import { useTheme } from '../src/theme/useTheme';
 import { PRIVACY_POLICY_URL, TERMS_OF_USE_URL } from '../src/config/legal';
 import { t } from '../src/i18n';
+import { useTabletColumn } from '../src/theme/useTabletColumn';
 
 const Feature: React.FC<{ icon: React.ReactNode; title: string; desc: string }> = ({
   icon,
@@ -40,6 +41,7 @@ const Feature: React.FC<{ icon: React.ReactNode; title: string; desc: string }> 
 
 export default function PaywallScreen() {
   const theme = useTheme();
+  const tabletColumn = useTabletColumn(640);
   const router = useRouter();
   const { ctaLabel, loading, errorMsg, handlePurchase, handleRestore } = usePaywall(() =>
     router.back(),
@@ -47,7 +49,7 @@ export default function PaywallScreen() {
 
   return (
     <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: theme.background }}>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 22 }}>
+      <ScrollView contentContainerStyle={{ padding: 20, gap: 22, ...tabletColumn, flexGrow: 1, justifyContent: 'center' }}>
         <View
           style={{
             backgroundColor: theme.primaryMuted,
