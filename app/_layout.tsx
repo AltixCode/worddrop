@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { LogBox, Pressable, Text, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Crown } from 'lucide-react-native';
@@ -9,6 +9,22 @@ import { useGameStore } from '../src/store/useGameStore';
 import { useTheme } from '../src/theme/useTheme';
 import { t } from '../src/i18n';
 import '../global.css';
+
+/**
+ * No LogBox toast in a capture build.
+ *
+ * Dropping the RevenueCat log level to ERROR silences its chatter but not its
+ * errors -- and in a simulator the errors are unavoidable, because there is no
+ * StoreKit for it to reach. React Native draws that as a toast docked at the
+ * bottom of the screen, photographed on a 13" iPad sitting across a purchase
+ * button. No log level can prevent it, because the error is real.
+ *
+ * Gated on `__DEV__` and the capture flag together: an ordinary debug build
+ * keeps its warnings, a release build never reaches it.
+ */
+if (__DEV__ && process.env.EXPO_PUBLIC_CAPTURE_MODE === '1') {
+  LogBox.ignoreAllLogs(true);
+}
 
 export default function RootLayout() {
   const router = useRouter();
