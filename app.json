@@ -35,7 +35,8 @@
           "fa",
           "el"
         ],
-        "CFBundleDevelopmentRegion": "en"
+        "CFBundleDevelopmentRegion": "en",
+        "ITSAppUsesNonExemptEncryption": false
       },
       "config": {
         "usesNonExemptEncryption": false
