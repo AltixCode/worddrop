@@ -372,7 +372,12 @@ jobs:
     name: Android Build & Package
     needs: [verify]
     if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'android' }}
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'github-hosted' && 'ubuntu-24.04' || fromJSON('["self-hosted", "Linux", "X64"]') }}
+    # android-build: hetzner-coolify-runner + Atas-Mac-mini only (has the
+    # Android SDK installed; the other two Macs don't, and stay iOS-only so
+    # their signing capacity isn't contended). Added as a fallback after both
+    # of the org's self-hosted runners silently stopped polling for ~5 hours
+    # on 2026-09-18 with no backup for either platform.
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.android_runner == 'github-hosted' && 'ubuntu-24.04' || fromJSON('["self-hosted", "android-build"]') }}
     outputs:
       app_name: ${{ steps.version.outputs.app_name }}
       app_version: ${{ steps.version.outputs.app_version }}
@@ -404,7 +409,7 @@ jobs:
         run: |
           # `df --output` is GNU-only and the runner image may ship busybox df,
           # where it fails and the guard silently measures nothing.
-          free_gb=$(df -PBG / | awk 'NR==2 {print $4}' | tr -dc '0-9')
+          free_gb=$(df -Pk / | awk 'NR==2 {print int($4/1024/1024)}')
           echo "free on this runner: ${free_gb}G"
           if [ "${free_gb:-0}" -lt 15 ]; then
             echo "::error::only ${free_gb}G free — refusing to build rather than risk the host"
