@@ -84,7 +84,14 @@ export const useTheme = (): ThemeColors => {
     danger: isDark ? '#F87171' : '#C62F2F',
     success: correct,
     tileEmpty: 'transparent',
-    tileEmptyBorder: isDark ? '#2A3444' : '#D8D8D2',
+    // `tileEmpty` is transparent, so this border IS the tile: before a letter
+    // is typed, an empty row is nothing but six of these outlines. It was
+    // #2A3444 at 1.53:1 against the dark background and #D8D8D2 at 1.33:1
+    // against the light one, which is why the live iPad screenshot has a
+    // third of the frame indistinguishable from its own background. WCAG AA
+    // asks 3:1 for the boundary of a non-text component; these are 3.35:1
+    // and 3.16:1.
+    tileEmptyBorder: isDark ? '#59677E' : '#8C8C84',
     tilePending: isDark ? '#1B2330' : '#FFFFFF',
     tilePendingBorder: isDark ? '#4A5769' : '#9AA2AE',
     tileCorrect: correct,
