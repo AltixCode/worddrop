@@ -100,7 +100,16 @@
           ]
         }
       ],
-      "./plugins/withAndroidRtl"
+      "./plugins/withAndroidRtl",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          }
+        }
+      ]
     ],
     "extra": {
       "puzzleApiUrl": "https://worddrop-puzzle.worddrop-puzzle-worker.workers.dev",
