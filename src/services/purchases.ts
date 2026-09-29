@@ -1,5 +1,5 @@
-import { Platform } from 'react-native';
-import Purchases, { PurchasesPackage, LOG_LEVEL } from 'react-native-purchases';
+import { Platform } from "react-native";
+import Purchases, { PurchasesPackage, LOG_LEVEL } from "react-native-purchases";
 
 /**
  * The RevenueCat entitlement one purchase grants: no ads, and the archive open.
@@ -10,7 +10,7 @@ import Purchases, { PurchasesPackage, LOG_LEVEL } from 'react-native-purchases';
  * entitlement under a different key, `hasPro` finds nothing, and the player pays for an unlock
  * that never arrives. (`remove_ads` is BlockJam's key, not this project's.)
  */
-const ENTITLEMENT_ID = 'pro';
+const ENTITLEMENT_ID = "pro";
 
 /**
  * Keys are public client keys by design, but they still come from the
@@ -28,17 +28,18 @@ const RC_API_KEY = Platform.select({
  * cancel or to grant the unlock during an outage. The caller gets the reason.
  */
 export type PurchaseOutcome =
-  | { status: 'unlocked' }
-  | { status: 'cancelled' }
-  | { status: 'no_entitlement' }
-  | { status: 'store_unavailable' }
-  | { status: 'failed'; message?: string };
+  | { status: "unlocked" }
+  | { status: "cancelled" }
+  | { status: "no_entitlement" }
+  | { status: "store_unavailable" }
+  | { status: "failed"; message?: string };
 
 let isInitialized = false;
 let initPromise: Promise<boolean> | null = null;
 
-const hasPro = (info: { entitlements: { active: Record<string, unknown> } }): boolean =>
-  info.entitlements.active[ENTITLEMENT_ID] !== undefined;
+const hasPro = (info: {
+  entitlements: { active: Record<string, unknown> };
+}): boolean => info.entitlements.active[ENTITLEMENT_ID] !== undefined;
 
 /** Configures the SDK exactly once; concurrent callers await the same attempt. */
 export const initPurchases = async (): Promise<boolean> => {
@@ -59,13 +60,13 @@ export const initPurchases = async (): Promise<boolean> => {
       // The warnings are useful in ordinary development, so this silences them
       // only under the capture flag, and __DEV__ keeps it inert in anything
       // that ships.
-      const capturing = __DEV__ && process.env.EXPO_PUBLIC_CAPTURE_MODE === '1';
+      const capturing = __DEV__ && process.env.EXPO_PUBLIC_CAPTURE_MODE === "1";
       Purchases.setLogLevel(capturing ? LOG_LEVEL.ERROR : LOG_LEVEL.WARN);
       await Purchases.configure({ apiKey: RC_API_KEY });
       isInitialized = true;
       return true;
     } catch (error) {
-      console.warn('[Purchases] Configuration failed:', error);
+      console.warn("[Purchases] Configuration failed:", error);
       return false;
     } finally {
       initPromise = null;
@@ -103,68 +104,93 @@ export const initPurchases = async (): Promise<boolean> => {
  */
 const capturePriceFallback = (): PurchasesPackage | null => {
   const price = process.env.EXPO_PUBLIC_CAPTURE_PRICE;
-  const capturing = __DEV__ && process.env.EXPO_PUBLIC_CAPTURE_MODE === '1';
+  const capturing = __DEV__ && process.env.EXPO_PUBLIC_CAPTURE_MODE === "1";
   if (!capturing || !price) return null;
-  const amount = Number(price.replace(/[^0-9.]/g, '')) || 0;
+  const amount = Number(price.replace(/[^0-9.]/g, "")) || 0;
   // Shaped like a package for display only. Nothing purchases it: a capture
   // route is forbidden from tapping a purchase button, and a release build
   // never reaches this line.
   return {
-    identifier: 'lifetime',
-    packageType: 'LIFETIME',
-    offeringIdentifier: 'capture',
+    identifier: "lifetime",
+    packageType: "LIFETIME",
+    offeringIdentifier: "capture",
     product: {
-      identifier: 'capture.lifetime',
-      priceString: price.startsWith('$') ? price : `$${price}`,
+      identifier: "capture.lifetime",
+      priceString: price.startsWith("$") ? price : `$${price}`,
       price: amount,
-      currencyCode: 'USD',
+      currencyCode: "USD",
     },
   } as unknown as PurchasesPackage;
 };
 
-export const getLifetimePackage = async (): Promise<PurchasesPackage | null> => {
-  if (!(await initPurchases())) return capturePriceFallback();
-  try {
-    const offerings = await Purchases.getOfferings();
-    return (
-      offerings.current?.lifetime ?? offerings.current?.availablePackages?.[0] ?? capturePriceFallback()
-    );
-  } catch (error) {
-    console.warn('[Purchases] Could not load offerings:', error);
+const sleep = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * A fresh offering fetch immediately after `initPurchases()` resolves can still come back with
+ * the package's underlying StoreKit product unresolved -- RevenueCat omits a package from
+ * `availablePackages` (and `current.lifetime`) whenever the store hasn't returned its product
+ * yet, which is indistinguishable from "this app has no lifetime product". Testers reported
+ * this as the paywall's purchase button simply not existing right after opening the app. These
+ * are retry backoffs, not a timeout: keep trying before falling back.
+ */
+const OFFERING_RETRY_DELAYS_MS = [500, 1000, 2000];
+
+export const getLifetimePackage =
+  async (): Promise<PurchasesPackage | null> => {
+    if (!(await initPurchases())) return capturePriceFallback();
+    for (const delay of [0, ...OFFERING_RETRY_DELAYS_MS]) {
+      if (delay) await sleep(delay);
+      try {
+        const offerings = await Purchases.getOfferings();
+        const pkg =
+          offerings.current?.lifetime ??
+          offerings.current?.availablePackages?.[0];
+        if (pkg) return pkg;
+      } catch (error) {
+        console.warn("[Purchases] Could not load offerings:", error);
+      }
+    }
     return capturePriceFallback();
-  }
-};
+  };
 
 export const purchaseLifetime = async (): Promise<PurchaseOutcome> => {
-  if (!(await initPurchases())) return { status: 'store_unavailable' };
+  if (!(await initPurchases())) return { status: "store_unavailable" };
 
   let pkg: PurchasesPackage | null;
   try {
     pkg = await getLifetimePackage();
   } catch {
-    return { status: 'store_unavailable' };
+    return { status: "store_unavailable" };
   }
-  if (!pkg) return { status: 'store_unavailable' };
+  if (!pkg) return { status: "store_unavailable" };
 
   try {
     const { customerInfo } = await Purchases.purchasePackage(pkg);
-    return hasPro(customerInfo) ? { status: 'unlocked' } : { status: 'no_entitlement' };
+    return hasPro(customerInfo)
+      ? { status: "unlocked" }
+      : { status: "no_entitlement" };
   } catch (error) {
     const err = error as { userCancelled?: boolean; message?: string };
-    if (err.userCancelled) return { status: 'cancelled' };
-    console.warn('[Purchases] Purchase failed:', error);
-    return { status: 'failed', message: err.message };
+    if (err.userCancelled) return { status: "cancelled" };
+    console.warn("[Purchases] Purchase failed:", error);
+    return { status: "failed", message: err.message };
   }
 };
 
 export const restorePurchases = async (): Promise<PurchaseOutcome> => {
-  if (!(await initPurchases())) return { status: 'store_unavailable' };
+  if (!(await initPurchases())) return { status: "store_unavailable" };
   try {
     const customerInfo = await Purchases.restorePurchases();
-    return hasPro(customerInfo) ? { status: 'unlocked' } : { status: 'no_entitlement' };
+    return hasPro(customerInfo)
+      ? { status: "unlocked" }
+      : { status: "no_entitlement" };
   } catch (error) {
-    console.warn('[Purchases] Restore failed:', error);
-    return { status: 'failed', message: (error as { message?: string }).message };
+    console.warn("[Purchases] Restore failed:", error);
+    return {
+      status: "failed",
+      message: (error as { message?: string }).message,
+    };
   }
 };
 
